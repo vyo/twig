@@ -11,7 +11,7 @@ class Logger(caller: Any) {
 
     val caller: Any = caller
 
-    var threshold: Level = Level.DEBUG
+    var threshold: Level = Level.INFO
 
     companion object root {
         var threshold: Level = Level.INFO
