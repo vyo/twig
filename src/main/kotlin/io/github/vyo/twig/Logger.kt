@@ -7,8 +7,7 @@ import kotlin.concurrent.currentThread
  * Created by Manuel Weidmann on 24.11.2015.
  */
 
-class Logger(caller: Any) {
-    val caller: Any = caller
+class Logger(val caller: Any) {
     var threshold: Level
 
     init {
