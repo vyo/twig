@@ -8,10 +8,12 @@ import kotlin.concurrent.currentThread
  */
 
 class Logger(caller: Any) {
-
     val caller: Any = caller
+    var threshold: Level
 
-    var threshold: Level = Level.INFO
+    init {
+        threshold = root.threshold
+    }
 
     companion object root {
         var threshold: Level = Level.INFO
