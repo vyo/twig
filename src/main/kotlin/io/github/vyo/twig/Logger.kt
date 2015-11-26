@@ -19,7 +19,7 @@ class Logger(val caller: Any) {
     }
 
     fun log(message: String, level: Level) {
-        if (level < threshold || level < root.threshold) return
+        if (level < threshold) return
         val thread: Thread = currentThread
         async {
             println("{${escape("thread") }:${escape(thread)}" +
