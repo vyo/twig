@@ -3,8 +3,13 @@
 This project tries to adhere to the [semantic versioning](http://semver.org/) and [change log](http://keepachangelog.com/) guidelines.
 
 ##  [Unreleased]
+
+##  [v0.6.0] - 2015-11-28
 ### Added
+- allow adding of custom fields on loggers
 - log changes of root log level
+### Changed
+- package structure adjusted for upcoming Appender extension
 
 ##  [v0.5.2] - 2015-11-28
 ### Fixed
