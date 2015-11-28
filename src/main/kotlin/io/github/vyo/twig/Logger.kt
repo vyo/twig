@@ -9,16 +9,14 @@ import kotlin.concurrent.currentThread
  * Created by Manuel Weidmann on 24.11.2015.
  */
 
-open class Logger(val caller: Any) {
-    var threshold: Level
+open class Logger(val caller: Any) : LoggerInterface {
+    override var threshold: Level = Logger.root.threshold
 
-    init {
-        threshold = root.threshold
-    }
+    companion object root : LoggerInterface {
+        override var threshold: Level = Level.INFO
+        val logger: Logger = Logger("root")
 
-    companion object root : Logger("root") {
         init {
-            threshold = Level.INFO
             Kovenant.context {
                 callbackContext {
                     dispatcher {
@@ -30,9 +28,42 @@ open class Logger(val caller: Any) {
             info("worker count: ${Runtime.getRuntime().availableProcessors()}")
             info("work queue size 1024")
         }
+
+        override fun log(message: String, level: Level) {
+            logger.log(message, level)
+        }
+
+        override fun trace(message: String) {
+            logger.trace(message)
+        }
+
+        override fun debug(message: String) {
+            logger.debug(message)
+        }
+
+        override fun info(message: String) {
+            logger.info(message)
+        }
+
+        override fun warn(message: String) {
+            logger.warn(message)
+        }
+
+        override fun error(message: String) {
+            logger.error(message)
+        }
+
+        override fun fatal(message: String) {
+            logger.fatal(message)
+        }
     }
 
-    fun log(message: String, level: Level) {
+
+    private fun escape(string: Any): String {
+        return "\"${string.toString()}\""
+    }
+
+    override fun log(message: String, level: Level) {
         if (level < threshold) return
         val thread: Thread = currentThread
         async {
@@ -53,31 +84,27 @@ open class Logger(val caller: Any) {
         }
     }
 
-    private fun escape(string: Any): String {
-        return "\"${string.toString()}\""
-    }
-
-    fun trace(message: String) {
+    override fun trace(message: String) {
         log(message, Level.TRACE)
     }
 
-    fun debug(message: String) {
+    override fun debug(message: String) {
         log(message, Level.DEBUG)
     }
 
-    fun info(message: String) {
+    override fun info(message: String) {
         log(message, Level.INFO)
     }
 
-    fun warn(message: String) {
+    override fun warn(message: String) {
         log(message, Level.WARN)
     }
 
-    fun error(message: String) {
+    override fun error(message: String) {
         log(message, Level.ERROR)
     }
 
-    fun fatal(message: String) {
+    override fun fatal(message: String) {
         log(message, Level.FATAL)
     }
 }
