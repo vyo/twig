@@ -20,6 +20,14 @@ class LoggerSpec : Spek() {
                 }
             }
         }
+        given("a custom field name \'custom\'") {
+            val customLogger: Logger = Logger("customTestLogger", arrayOf("custom","audit","retention"))
+            on("invocation") {
+                it("should add the custom field to the JSON log entry") {
+                    customLogger.info("some test message", "", "classified", "none")
+                }
+            }
+        }
 
     }
 }
