@@ -3,6 +3,8 @@
 This project tries to adhere to the [semantic versioning](http://semver.org/) and [change log](http://keepachangelog.com/) guidelines.
 
 ##  [Unreleased]
+### Added
+- log root log level on Logger initialisation
 
 ##   [v0.5.1] - 2015-11-28
 ### Added
