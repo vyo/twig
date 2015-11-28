@@ -1,4 +1,4 @@
-package io.github.vyo.twig
+package io.github.vyo.twig.logger
 
 /**
  * Created by Manuel Weidmann on 28.11.2015.

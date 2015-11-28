@@ -1,4 +1,4 @@
-package io.github.vyo.twig
+package io.github.vyo.twig.logger
 
 import nl.komponents.kovenant.Kovenant
 import nl.komponents.kovenant.async
@@ -90,7 +90,7 @@ open class Logger(val caller: Any, override var customFields: Array<String> = ar
         } fail {
             var entry: String = "{${escape("thread")}:${escape(thread)}," +
                     "${escape("time")}:${escape(System.currentTimeMillis())}," +
-                    "${escape("level")}:${io.github.vyo.twig.Level.FATAL.toInt()}}" +
+                    "${escape("level")}:${Level.FATAL.toInt()}}" +
                     "${escape("name")}:${escape(this)}," +
                     "${escape("message")}:${escape("logging failed: ${it.message}")}," +
                     "${escape("originalLevel")}:${escape(level.toInt())}," +
