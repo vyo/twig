@@ -2,6 +2,10 @@ change log
 ========================================
 This project tries to adhere to the [semantic versioning](http://semver.org/) and [change log](http://keepachangelog.com/) guidelines.
 
+#   v0.5.1
+### Added
+- minimal test specification via the [Spek](http://jetbrains.github.io/spek/) library
+
 #   v0.5.0
 ### Fixed
 - logger initialisation possible again (root logger initialisation competed with Logger instance initialisation)
