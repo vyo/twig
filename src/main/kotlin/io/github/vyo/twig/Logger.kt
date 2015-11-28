@@ -7,15 +7,17 @@ import kotlin.concurrent.currentThread
  * Created by Manuel Weidmann on 24.11.2015.
  */
 
-class Logger(val caller: Any) {
+open class Logger(val caller: Any) {
     var threshold: Level
 
     init {
         threshold = root.threshold
     }
 
-    companion object root {
-        var threshold: Level = Level.INFO
+    companion object root : Logger("root") {
+        init {
+            threshold = Level.INFO
+        }
     }
 
     fun log(message: String, level: Level) {
