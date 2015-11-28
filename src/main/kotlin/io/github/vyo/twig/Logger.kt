@@ -14,6 +14,10 @@ open class Logger(val caller: Any) : LoggerInterface {
 
     companion object root : LoggerInterface {
         override var threshold: Level = Level.INFO
+            set(value) {
+                field = value
+                info("log level $threshold")
+            }
         private val logger: Logger = Logger("root")
 
         init {
