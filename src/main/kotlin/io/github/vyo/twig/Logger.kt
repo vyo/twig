@@ -1,6 +1,8 @@
 package io.github.vyo.twig
 
+import nl.komponents.kovenant.Kovenant
 import nl.komponents.kovenant.async
+import nl.komponents.kovenant.disruptor.queue.disruptorWorkQueue
 import kotlin.concurrent.currentThread
 
 /**
@@ -17,6 +19,14 @@ open class Logger(val caller: Any) {
     companion object root : Logger("root") {
         init {
             threshold = Level.INFO
+            Kovenant.context {
+                callbackContext {
+                    dispatcher {
+                        concurrentTasks = Runtime.getRuntime().availableProcessors()
+                        workQueue = disruptorWorkQueue()
+                    }
+                }
+            }
         }
     }
 
