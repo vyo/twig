@@ -1,12 +1,14 @@
-change log
-========================================
+#   change log
+
 This project tries to adhere to the [semantic versioning](http://semver.org/) and [change log](http://keepachangelog.com/) guidelines.
 
-#   v0.5.1
+##  [Unreleased]
+
+##   [v0.5.1] - 2015-11-28
 ### Added
 - minimal test specification via the [Spek](http://jetbrains.github.io/spek/) library
 
-#   v0.5.0
+##   [v0.5.0] - 2015-11-28
 ### Fixed
 - logger initialisation possible again (root logger initialisation competed with Logger instance initialisation)
 
@@ -18,7 +20,7 @@ This project tries to adhere to the [semantic versioning](http://semver.org/) an
    extending Logger
 - root logger manually delegates calls to private logger
 
-#   v0.4.1
+##   [v0.4.1] - 2015-11-28
 ### Added
 - log configuration information on initialisation
 - Disruptor support
@@ -26,25 +28,25 @@ This project tries to adhere to the [semantic versioning](http://semver.org/) an
     - worker thread counts equals number of available processors
 
 
-#   v0.3.0
+##   [v0.3.0] - 2015-11-28
 ### Changed
 - Logger.root object is now a Logger itself
 
-#   v0.2.0
+##   [v0.2.0] - 2015-11-26
 ### Changed
 - root log level no longer takes precedence
 
-#   v0.1.2
+##   [v0.1.2] - 2015-11-26
 ### Changed
 - newly created loggers now inherit the log level of the root logger
 
-#  v0.1.1
+##  [v0.1.1] - 2015-11-26
 ### Changed
 - default root log level change:
     - from DEBUG
     - to INFO
 
-#   v0.1.0
+##   [v0.1.0] - 2015-11-25
 ### Added
 - console logging
 - JSON log entries
