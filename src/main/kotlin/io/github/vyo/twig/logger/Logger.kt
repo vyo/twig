@@ -1,5 +1,7 @@
 package io.github.vyo.twig.logger
 
+import io.github.vyo.twig.appender.Appender
+import io.github.vyo.twig.appender.ConsoleAppender
 import nl.komponents.kovenant.Kovenant
 import nl.komponents.kovenant.async
 import nl.komponents.kovenant.disruptor.queue.disruptorWorkQueue
@@ -9,7 +11,9 @@ import kotlin.concurrent.currentThread
  * Created by Manuel Weidmann on 24.11.2015.
  */
 
-open class Logger(val caller: Any, override var customFields: Array<String> = arrayOf()) : LoggerInterface {
+open class Logger(val caller: Any,
+                  var appender: Appender = ConsoleAppender(),
+                  override var customFields: Array<String> = arrayOf()) : LoggerInterface {
     override var threshold: Level = root.threshold
 
     companion object root : LoggerInterface {
@@ -81,12 +85,11 @@ open class Logger(val caller: Any, override var customFields: Array<String> = ar
                     "${escape("message")}:${escape(message[0])}"
 
             for (index in 2..message.size) {
-                println(",${escape(customFields[index - 2])}:${escape(message[index - 1])}")
                 entry += ",${escape(customFields[index - 2])}:${escape(message[index - 1])}"
             }
 
             entry += "}"
-            println(entry)
+            appender.write(entry)
         } fail {
             var entry: String = "{${escape("thread")}:${escape(thread)}," +
                     "${escape("time")}:${escape(System.currentTimeMillis())}," +
@@ -98,12 +101,11 @@ open class Logger(val caller: Any, override var customFields: Array<String> = ar
                     "${escape("originalMessage")}:${escape(message[0])}"
 
             for (index in 2..message.size) {
-                println(",${escape(customFields[index - 2])}:${escape(message[index - 1])}")
                 entry += ",${escape(customFields[index - 2])}:${escape(message[index - 1])}"
             }
 
             entry += "}"
-            println(entry)
+            appender.write(entry)
         }
     }
 
