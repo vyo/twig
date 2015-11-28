@@ -27,6 +27,15 @@ class Logger(val caller: Any) {
                     "${escape("level")}:${escape(level.toInt())}," +
                     "${escape("name")}:${escape(caller)}," +
                     "${escape("message")}:${escape(message)}}")
+        } fail {
+            println("{${escape("thread")}:${escape(thread)}" +
+                    "${escape("time")}:${escape(System.currentTimeMillis())}," +
+                    "${escape("level")}:${Level.FATAL.toInt()}}" +
+                    "${escape("name")}:${escape(this)}," +
+                    "${escape("message")}:${escape("logging failed: ${it.message}")}," +
+                    "${escape("originalLevel")}:${escape(level.toInt())}," +
+                    "${escape("originalName")}:${escape(caller)}," +
+                    "${escape("originalMessage")}:${escape(message)}}")
         }
     }
 
