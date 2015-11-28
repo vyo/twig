@@ -27,6 +27,8 @@ open class Logger(val caller: Any) {
                     }
                 }
             }
+            info("worker count: ${Runtime.getRuntime().availableProcessors()}")
+            info("work queue size 1024")
         }
     }
 
