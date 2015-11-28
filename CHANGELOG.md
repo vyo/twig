@@ -4,6 +4,10 @@ This project tries to adhere to the [semantic versioning](http://semver.org/) an
 
 ##  [Unreleased]
 
+##  [v0.7.0] - 2015-11-28
+### Added
+- allow using of custom Appenders
+
 ##  [v0.6.0] - 2015-11-28
 ### Added
 - allow adding of custom fields on loggers
