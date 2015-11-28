@@ -20,6 +20,7 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'nl.komponents.kovenant:kovenant:2.9.+'
+    compile 'nl.komponents.kovenant:kovenant-disruptor:2.9.+'
 }
 sourceSets {
     main.java.srcDirs += 'src/main/kotlin'
