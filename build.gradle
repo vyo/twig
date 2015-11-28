@@ -1,5 +1,6 @@
 buildscript {
     ext.kotlin_version = '1.0.0-beta-2423'
+    ext.spek_version = '0.1.182'
     repositories {
         mavenCentral()
     }
@@ -27,9 +28,12 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'nl.komponents.kovenant:kovenant:2.9.+'
     compile 'nl.komponents.kovenant:kovenant-disruptor:2.9.+'
+
+    testCompile "org.jetbrains.spek:spek:$spek_version"
 }
 sourceSets {
     main.java.srcDirs += 'src/main/kotlin'
+    test.java.srcDirs += 'src/test/kotlin'
 }
 
 task wrapper(type: Wrapper) {
