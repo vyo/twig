@@ -14,7 +14,7 @@ open class Logger(val caller: Any) : LoggerInterface {
 
     companion object root : LoggerInterface {
         override var threshold: Level = Level.INFO
-        val logger: Logger = Logger("root")
+        private val logger: Logger = Logger("root")
 
         init {
             Kovenant.context {
