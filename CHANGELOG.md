@@ -2,6 +2,18 @@ change log
 ========================================
 This project tries to adhere to the [semantic versioning](http://semver.org/) and [change log](http://keepachangelog.com/) guidelines.
 
+#   v0.5.0
+### Fixed
+- logger initialisation possible again (root logger initialisation competed with Logger instance initialisation)
+
+### Added
+- new interface LoggerInterface
+### Changed
+- Logger implements LoggerInterface
+- root logger implements LoggerInterface instead of
+   extending Logger
+- root logger manually delegates calls to private logger
+
 #   v0.4.1
 ### Added
 - log configuration information on initialisation
