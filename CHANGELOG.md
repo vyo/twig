@@ -3,6 +3,8 @@
 This project tries to adhere to the [semantic versioning](http://semver.org/) and [change log](http://keepachangelog.com/) guidelines.
 
 ##  [Unreleased]
+
+##  [v0.5.2] - 2015-11-28
 ### Fixed
 - formatting bug which caused log entries not to be valid JSON objects
 ### Added
