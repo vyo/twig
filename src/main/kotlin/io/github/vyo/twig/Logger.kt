@@ -68,13 +68,13 @@ open class Logger(val caller: Any) : LoggerInterface {
         if (level < threshold) return
         val thread: Thread = currentThread
         async {
-            println("{${escape("thread")}:${escape(thread)}" +
+            println("{${escape("thread")}:${escape(thread)}," +
                     "${escape("time")}:${escape(System.currentTimeMillis())}," +
                     "${escape("level")}:${escape(level.toInt())}," +
                     "${escape("name")}:${escape(caller)}," +
                     "${escape("message")}:${escape(message)}}")
         } fail {
-            println("{${escape("thread")}:${escape(thread)}" +
+            println("{${escape("thread")}:${escape(thread)}," +
                     "${escape("time")}:${escape(System.currentTimeMillis())}," +
                     "${escape("level")}:${Level.FATAL.toInt()}}" +
                     "${escape("name")}:${escape(this)}," +
