@@ -1,0 +1,36 @@
+change log
+========================================
+This project tries to adhere to the [semantic versioning](http://semver.org/) and [change log](http://keepachangelog.com/) guidelines.
+
+#   v0.4.1
+### Added
+- log configuration information on initialisation
+- Disruptor support
+    - queue size of 1024 (default)
+    - worker thread counts equals number of available processors
+
+
+#   v0.3.0
+### Changed
+- Logger.root object is now a Logger itself
+
+#   v0.2.0
+### Changed
+- root log level no longer takes precedence
+
+#   v0.1.2
+### Changed
+- newly created loggers now inherit the log level of the root logger
+
+#  v0.1.1
+### Changed
+- default root log level change:
+    - from DEBUG
+    - to INFO
+
+#   v0.1.0
+### Added
+- console logging
+- JSON log entries
+- global log level threshold
+- per-logger log level threshold (root log level takes precedence)
