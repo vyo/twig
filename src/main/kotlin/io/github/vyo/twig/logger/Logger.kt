@@ -138,7 +138,7 @@ open class Logger(val caller: Any,
             }
 
             entry += ",${escape("v")}:${escape(0)}"
-            appender.write(entry)
+            System.err.println(entry)
         }
     }
 
