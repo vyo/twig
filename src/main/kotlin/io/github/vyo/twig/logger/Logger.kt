@@ -34,9 +34,9 @@ open class Logger(val caller: Any,
                     }
                 }
             }
-            info("worker count: ${Runtime.getRuntime().availableProcessors()}")
-            info("work queue size: 1024")
-            info("log level: $threshold")
+            info("logging worker count: ${Runtime.getRuntime().availableProcessors()}")
+            info("logging work queue size: 1024")
+            info("root log level: $threshold")
         }
 
         override fun log(level: Level, vararg message: String) {
