@@ -1,12 +1,10 @@
 package io.github.vyo.twig.logger
 
 import io.github.vyo.twig.appender.Appender
-import nl.komponents.kovenant.async
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.shouldBeTrue
 import org.jetbrains.spek.api.shouldEqual
 import java.util.*
-import kotlin.test.fail
 
 /**
  * Created by Manuel Weidmann on 28.11.2015.
@@ -55,24 +53,14 @@ class LoggerSpec : Spek() {
 
             on("invocation") {
                 it("should be able to log messages as 'TwigRootLogger'") {
-                    async {
-                        Logger.info("root test message")
+                    Logger.info("root test message").get()
 
-                        var retriesLeft: Int = 5
-                        while (retriesLeft != 0) {
-                            var entryFound: Boolean = false
-                            for (entry in DummyLog.entries) {
-                                if (entry.contains("TwigRootLogger") && entry.contains("root test message"))
-                                    entryFound = true
-                            }
-                            shouldBeTrue(entryFound)
-                            Thread.sleep(5)
-                            retriesLeft--
-                        }
-                        if (retriesLeft == 0) fail("failed to write to log")
-                    } fail {
-                        fail(it.message)
+                    var entryFound: Boolean = false
+                    for (entry in DummyLog.entries) {
+                        if (entry.contains("TwigRootLogger") && entry.contains("root test message"))
+                            entryFound = true
                     }
+                    shouldBeTrue(entryFound)
                 }
             }
 
@@ -91,31 +79,17 @@ class LoggerSpec : Spek() {
 
         given("a logger with a custom field name \'custom\'") {
 
-            //            beforeOn {
-            //                DummyLog.clear()
-            //            }
-
             val customLogger: Logger = Logger("customTestLogger")
             on("invocation") {
                 it("should add the custom field to the JSON log entry") {
-                    async {
-                        customLogger.info("some test message", Pair("audit", "classified"), Pair("retention", "none"))
+                    customLogger.info("some test message", Pair("audit", "classified"), Pair("retention", "none")).get()
 
-                        var retriesLeft: Int = 5
-                        while (retriesLeft != 0) {
-                            var entryFound: Boolean = false
-                            for (entry in DummyLog.entries) {
-                                if (entry.contains("classified") && entry.contains("customTestLogger")) entryFound =
-                                        true
-                            }
-                            shouldBeTrue(entryFound)
-                            Thread.sleep(5)
-                            retriesLeft--
-                        }
-                        if (retriesLeft == 0) fail("failed to write to log")
-                    } fail {
-                        fail(it.message)
+                    var entryFound: Boolean = false
+                    for (entry in DummyLog.entries) {
+                        if (entry.contains("classified") && entry.contains("customTestLogger")) entryFound =
+                                true
                     }
+                    shouldBeTrue(entryFound)
                 }
             }
         }

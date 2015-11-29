@@ -3,6 +3,7 @@ package io.github.vyo.twig.logger
 import io.github.vyo.twig.appender.Appender
 import io.github.vyo.twig.appender.ConsoleAppender
 import nl.komponents.kovenant.Kovenant
+import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.async
 import nl.komponents.kovenant.disruptor.queue.disruptorWorkQueue
 import java.lang.management.ManagementFactory
@@ -57,32 +58,32 @@ open class Logger(val caller: Any,
             info("root log level: $threshold")
         }
 
-        override fun log(level: Level, message: Any, vararg customMessages: Pair<String, Any>) {
-            logger.log(level, message)
+        override fun log(level: Level, message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
+            return logger.log(level, message)
         }
 
-        override fun trace(message: Any, vararg customMessages: Pair<String, Any>) {
-            logger.trace(message)
+        override fun trace(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
+            return logger.trace(message)
         }
 
-        override fun debug(message: Any, vararg customMessages: Pair<String, Any>) {
-            logger.debug(message)
+        override fun debug(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
+            return logger.debug(message)
         }
 
-        override fun info(message: Any, vararg customMessages: Pair<String, Any>) {
-            logger.info(message)
+        override fun info(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
+            return logger.info(message)
         }
 
-        override fun warn(message: Any, vararg customMessages: Pair<String, Any>) {
-            logger.warn(message)
+        override fun warn(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
+            return logger.warn(message)
         }
 
-        override fun error(message: Any, vararg customMessages: Pair<String, Any>) {
-            logger.error(message)
+        override fun error(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
+            return logger.error(message)
         }
 
-        override fun fatal(message: Any, vararg customMessages: Pair<String, Any>) {
-            logger.fatal(message)
+        override fun fatal(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
+            return logger.fatal(message)
         }
     }
 
@@ -102,11 +103,11 @@ open class Logger(val caller: Any,
         }
     }
 
-    override fun log(level: Level, message: Any, vararg customMessages: Pair<String, Any>) {
-        if (level < threshold) return
-        if (customMessages.size == 0) return
+    override fun log(level: Level, message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
+        if (level < threshold) return async { }
+        if (customMessages.size == 0) return async { }
         val thread: Thread = currentThread
-        async {
+        return async {
             var entry: String = "{${escape("hostname")}:${escape(hostName)}," +
                     "${escape("pid")}:${escape(pid)}," +
                     "${escape("thread")}:${escape(thread)}," +
@@ -143,27 +144,27 @@ open class Logger(val caller: Any,
     }
 
 
-    override fun trace(message: Any, vararg customMessages: Pair<String, Any>) {
-        log(Level.TRACE, message, *customMessages)
+    override fun trace(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
+        return log(Level.TRACE, message, *customMessages)
     }
 
-    override fun debug(message: Any, vararg customMessages: Pair<String, Any>) {
-        log(Level.DEBUG, message, *customMessages)
+    override fun debug(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
+        return log(Level.DEBUG, message, *customMessages)
     }
 
-    override fun info(message: Any, vararg customMessages: Pair<String, Any>) {
-        log(Level.INFO, message, *customMessages)
+    override fun info(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
+        return log(Level.INFO, message, *customMessages)
     }
 
-    override fun warn(message: Any, vararg customMessages: Pair<String, Any>) {
-        log(Level.WARN, message, *customMessages)
+    override fun warn(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
+        return log(Level.WARN, message, *customMessages)
     }
 
-    override fun error(message: Any, vararg customMessages: Pair<String, Any>) {
-        log(Level.ERROR, message, *customMessages)
+    override fun error(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
+        return log(Level.ERROR, message, *customMessages)
     }
 
-    override fun fatal(message: Any, vararg customMessages: Pair<String, Any>) {
-        log(Level.FATAL, message, *customMessages)
+    override fun fatal(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
+        return log(Level.FATAL, message, *customMessages)
     }
 }
