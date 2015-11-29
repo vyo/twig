@@ -5,6 +5,10 @@ import io.github.vyo.twig.appender.ConsoleAppender
 import nl.komponents.kovenant.Kovenant
 import nl.komponents.kovenant.async
 import nl.komponents.kovenant.disruptor.queue.disruptorWorkQueue
+import java.lang.management.ManagementFactory
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.concurrent.currentThread
 
 /**
@@ -12,18 +16,34 @@ import kotlin.concurrent.currentThread
  */
 
 open class Logger(val caller: Any,
-                  var appender: Appender = ConsoleAppender(),
+                  override var appender: Appender = Logger.root.appender,
                   override var customFields: Array<String> = arrayOf()) : LoggerInterface {
     override var threshold: Level = root.threshold
 
     companion object root : LoggerInterface {
+        override var appender: Appender = ConsoleAppender()
+            set(value) {
+                field = value
+                logger.appender = value
+                info("appender $appender")
+            }
         override var threshold: Level = Level.INFO
             set(value) {
                 field = value
                 info("log level $threshold")
             }
         override val customFields: Array<String> = arrayOf()
-        private val logger: Logger = Logger("root")
+        val processInfo: String = ManagementFactory.getRuntimeMXBean().name
+        val pid: Int = Integer.parseInt(processInfo.split('@')[0])
+        val hostName: String = processInfo.split('@')[1]
+        val timeZone: TimeZone = TimeZone.getTimeZone("UTC");
+        val isoFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+
+        init {
+            isoFormat.timeZone = timeZone
+        }
+
+        private val logger: Logger = Logger("TwigRootLogger")
 
         init {
             Kovenant.context {
@@ -78,24 +98,28 @@ open class Logger(val caller: Any,
         if (message.size == 0) return
         val thread: Thread = currentThread
         async {
-            var entry: String = "{${escape("thread")}:${escape(thread)}," +
-                    "${escape("time")}:${escape(System.currentTimeMillis())}," +
-                    "${escape("level")}:${escape(level.toInt())}," +
+            var entry: String = "{${escape("hostname")}:${escape(hostName)}," +
+                    "${escape("pid")}:$pid," +
+                    "${escape("thread")}:${escape(thread)}," +
+                    "${escape("time")}:${escape(isoFormat.format(Date(System.currentTimeMillis())))}," +
+                    "${escape("level")}:${level.toInt()}," +
                     "${escape("name")}:${escape(caller)}," +
-                    "${escape("message")}:${escape(message[0])}"
+                    "${escape("msg")}:${escape(message[0])}"
 
             for (index in 2..message.size) {
                 entry += ",${escape(customFields[index - 2])}:${escape(message[index - 1])}"
             }
 
-            entry += "}"
+            entry += ",${escape("v")}:0}"
             appender.write(entry)
         } fail {
-            var entry: String = "{${escape("thread")}:${escape(thread)}," +
-                    "${escape("time")}:${escape(System.currentTimeMillis())}," +
-                    "${escape("level")}:${Level.FATAL.toInt()}}" +
+            var entry: String = "{${escape("hostname")}:${escape(hostName)}," +
+                    "${escape("pid")}:$pid," +
+                    "${escape("thread")}:${escape(thread)}," +
+                    "${escape("time")}:${escape(isoFormat.format(Date(System.currentTimeMillis())))}," +
+                    "${escape("level")}:${Level.FATAL.toInt()}" +
                     "${escape("name")}:${escape(this)}," +
-                    "${escape("message")}:${escape("logging failed: ${it.message}")}," +
+                    "${escape("msg")}:${escape("logging failed: ${it.message}")}," +
                     "${escape("originalLevel")}:${escape(level.toInt())}," +
                     "${escape("originalName")}:${escape(caller)}," +
                     "${escape("originalMessage")}:${escape(message[0])}"
@@ -104,7 +128,7 @@ open class Logger(val caller: Any,
                 entry += ",${escape(customFields[index - 2])}:${escape(message[index - 1])}"
             }
 
-            entry += "}"
+            entry += ",${escape("v")}:0}"
             appender.write(entry)
         }
     }
