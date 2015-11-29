@@ -9,19 +9,18 @@ interface LoggerInterface {
 
     var appender: Appender
     var threshold: Level
-    val customFields: Array<String>
+    
+    fun log(level: Level, message: Any, vararg customMessages: Pair<String, Any>)
 
-    fun log(level: Level, message: String, vararg customMessages: String)
+    fun trace(message: Any, vararg customMessages: Pair<String, Any>)
 
-    fun trace(message: String, vararg customMessages: String)
+    fun debug(message: Any, vararg customMessages: Pair<String, Any>)
 
-    fun debug(message: String, vararg customMessages: String)
+    fun info(message: Any, vararg customMessages: Pair<String, Any>)
 
-    fun info(message: String, vararg customMessages: String)
+    fun warn(message: Any, vararg customMessages: Pair<String, Any>)
 
-    fun warn(message: String, vararg customMessages: String)
+    fun error(message: Any, vararg customMessages: Pair<String, Any>)
 
-    fun error(message: String, vararg customMessages: String)
-
-    fun fatal(message: String, vararg customMessages: String)
+    fun fatal(message: Any, vararg customMessages: Pair<String, Any>)
 }

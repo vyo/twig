@@ -4,7 +4,11 @@ This project tries to adhere to the [semantic versioning](http://semver.org/) an
 
 ##  [Unreleased]
 ### Changed
+- log message may now be of type Any
 - log message may not be empty
+- custom field usage changed:
+    -   custom fields are not specified in advance anymore
+    -   custom fields are now passed on as a variable number of Pair<String, Any> representing pairs of custom field name and custom field value, e.g. as ```log.info("my message", Pair("customField", "my custom content"))``` or ```log.info("product bought", Pair("price", 5.99))```
 
 ##  [0.8.0] - 2015-11-29
 ### Added

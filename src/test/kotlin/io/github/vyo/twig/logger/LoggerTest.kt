@@ -65,7 +65,6 @@ class LoggerSpec : Spek() {
                                 if (entry.contains("TwigRootLogger") && entry.contains("root test message"))
                                     entryFound = true
                             }
-                            println(DummyLog)
                             shouldBeTrue(entryFound)
                             Thread.sleep(5)
                             retriesLeft--
@@ -96,12 +95,11 @@ class LoggerSpec : Spek() {
             //                DummyLog.clear()
             //            }
 
-            val customLogger: Logger = Logger("customTestLogger", customFields = arrayOf("custom", "audit",
-                    "retention"))
+            val customLogger: Logger = Logger("customTestLogger")
             on("invocation") {
                 it("should add the custom field to the JSON log entry") {
                     async {
-                        customLogger.info("some test message", "", "classified", "none")
+                        customLogger.info("some test message", Pair("audit", "classified"), Pair("retention", "none"))
 
                         var retriesLeft: Int = 5
                         while (retriesLeft != 0) {
@@ -110,7 +108,6 @@ class LoggerSpec : Spek() {
                                 if (entry.contains("classified") && entry.contains("customTestLogger")) entryFound =
                                         true
                             }
-                            println(DummyLog)
                             shouldBeTrue(entryFound)
                             Thread.sleep(5)
                             retriesLeft--
