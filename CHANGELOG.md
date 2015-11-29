@@ -3,6 +3,8 @@
 This project tries to adhere to the [semantic versioning](http://semver.org/) and [change log](http://keepachangelog.com/) guidelines.
 
 ##  [Unreleased]
+### Changed
+- log message may not be empty
 
 ##  [0.8.0] - 2015-11-29
 ### Added

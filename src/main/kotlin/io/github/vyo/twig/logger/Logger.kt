@@ -59,32 +59,32 @@ open class Logger(val caller: Any,
             info("root log level: $threshold")
         }
 
-        override fun log(level: Level, vararg message: String) {
-            logger.log(level, message[0])
+        override fun log(level: Level, message: String, vararg customMessages: String) {
+            logger.log(level, message)
         }
 
-        override fun trace(vararg message: String) {
-            logger.trace(message[0])
+        override fun trace(message: String, vararg customMessages: String) {
+            logger.trace(message)
         }
 
-        override fun debug(vararg message: String) {
-            logger.debug(message[0])
+        override fun debug(message: String, vararg customMessages: String) {
+            logger.debug(message)
         }
 
-        override fun info(vararg message: String) {
-            logger.info(message[0])
+        override fun info(message: String, vararg customMessages: String) {
+            logger.info(message)
         }
 
-        override fun warn(vararg message: String) {
-            logger.warn(message[0])
+        override fun warn(message: String, vararg customMessages: String) {
+            logger.warn(message)
         }
 
-        override fun error(vararg message: String) {
-            logger.error(message[0])
+        override fun error(message: String, vararg customMessages: String) {
+            logger.error(message)
         }
 
-        override fun fatal(vararg message: String) {
-            logger.fatal(message[0])
+        override fun fatal(message: String, vararg customMessages: String) {
+            logger.fatal(message)
         }
     }
 
@@ -93,9 +93,9 @@ open class Logger(val caller: Any,
         return "\"${string.toString()}\""
     }
 
-    override fun log(level: Level, vararg message: String) {
+    override fun log(level: Level, message: String, vararg customMessages: String) {
         if (level < threshold) return
-        if (message.size == 0) return
+        if (customMessages.size == 0) return
         val thread: Thread = currentThread
         async {
             var entry: String = "{${escape("hostname")}:${escape(hostName)}," +
@@ -104,10 +104,10 @@ open class Logger(val caller: Any,
                     "${escape("time")}:${escape(isoFormat.format(Date(System.currentTimeMillis())))}," +
                     "${escape("level")}:${level.toInt()}," +
                     "${escape("name")}:${escape(caller)}," +
-                    "${escape("msg")}:${escape(message[0])}"
+                    "${escape("msg")}:${escape(message)}"
 
-            for (index in 2..message.size) {
-                entry += ",${escape(customFields[index - 2])}:${escape(message[index - 1])}"
+            for (index in 1..customMessages.size) {
+                entry += ",${escape(customFields[index - 1])}:${escape(customMessages[index - 1])}"
             }
 
             entry += ",${escape("v")}:0}"
@@ -122,10 +122,10 @@ open class Logger(val caller: Any,
                     "${escape("msg")}:${escape("logging failed: ${it.message}")}," +
                     "${escape("originalLevel")}:${escape(level.toInt())}," +
                     "${escape("originalName")}:${escape(caller)}," +
-                    "${escape("originalMessage")}:${escape(message[0])}"
+                    "${escape("originalMessage")}:${escape(message)}"
 
-            for (index in 2..message.size) {
-                entry += ",${escape(customFields[index - 2])}:${escape(message[index - 1])}"
+            for (index in 1..customMessages.size) {
+                entry += ",${escape(customFields[index - 1])}:${escape(customMessages[index - 1])}"
             }
 
             entry += ",${escape("v")}:0}"
@@ -133,27 +133,27 @@ open class Logger(val caller: Any,
         }
     }
 
-    override fun trace(vararg message: String) {
-        log(Level.TRACE, *message)
+    override fun trace(message: String, vararg customMessages: String) {
+        log(Level.TRACE, message, *customMessages)
     }
 
-    override fun debug(vararg message: String) {
-        log(Level.DEBUG, *message)
+    override fun debug(message: String, vararg customMessages: String) {
+        log(Level.DEBUG, message, *customMessages)
     }
 
-    override fun info(vararg message: String) {
-        log(Level.INFO, *message)
+    override fun info(message: String, vararg customMessages: String) {
+        log(Level.INFO, message, *customMessages)
     }
 
-    override fun warn(vararg message: String) {
-        log(Level.WARN, *message)
+    override fun warn(message: String, vararg customMessages: String) {
+        log(Level.WARN, message, *customMessages)
     }
 
-    override fun error(vararg message: String) {
-        log(Level.ERROR, *message)
+    override fun error(message: String, vararg customMessages: String) {
+        log(Level.ERROR, message, *customMessages)
     }
 
-    override fun fatal(vararg message: String) {
-        log(Level.FATAL, *message)
+    override fun fatal(message: String, vararg customMessages: String) {
+        log(Level.FATAL, message, *customMessages)
     }
 }

@@ -11,17 +11,17 @@ interface LoggerInterface {
     var threshold: Level
     val customFields: Array<String>
 
-    fun log(level: Level, vararg message: String)
+    fun log(level: Level, message: String, vararg customMessages: String)
 
-    fun trace(vararg message: String)
+    fun trace(message: String, vararg customMessages: String)
 
-    fun debug(vararg message: String)
+    fun debug(message: String, vararg customMessages: String)
 
-    fun info(vararg message: String)
+    fun info(message: String, vararg customMessages: String)
 
-    fun warn(vararg message: String)
+    fun warn(message: String, vararg customMessages: String)
 
-    fun error(vararg message: String)
+    fun error(message: String, vararg customMessages: String)
 
-    fun fatal(vararg message: String)
+    fun fatal(message: String, vararg customMessages: String)
 }
