@@ -3,6 +3,10 @@
 This project tries to adhere to the [semantic versioning](http://semver.org/) and [change log](http://keepachangelog.com/) guidelines.
 
 ##  [Unreleased]
+### Fixed
+- log error handling re-enabled
+### Changed
+- error log entries will always be written to STDERR instead of the root logger's appender
 
 ##  [v0.9.0] - 2015-11-29
 ### Changed
