@@ -105,7 +105,6 @@ open class Logger(val caller: Any,
 
     override fun log(level: Level, message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
         if (level < threshold) return async { }
-        if (customMessages.size == 0) return async { }
         val thread: Thread = currentThread
         return async {
             var entry: String = "{${escape("hostname")}:${escape(hostName)}," +
