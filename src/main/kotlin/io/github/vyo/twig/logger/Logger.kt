@@ -13,6 +13,8 @@ import java.util.*
 import kotlin.concurrent.currentThread
 
 /**
+ * Default logger implementation for Twig
+ *
  * Created by Manuel Weidmann on 24.11.2015.
  */
 
@@ -90,14 +92,14 @@ open class Logger(val caller: Any,
 
     private fun escape(any: Any): String {
         return when (any) {
-            is Array<*> -> "${any.toString()}"
-            is Boolean -> "${any.toString()}"
-            is Double -> "${any.toString()}"
-            is Float -> "${any.toString()}"
-            is Long -> "${any.toString()}"
-            is Int -> "${any.toString()}"
-            is Short -> "${any.toString()}"
-            is Byte -> "${any.toString()}"
+            is Array<*>,
+            is Boolean,
+            is Double,
+            is Float,
+            is Long,
+            is Int,
+            is Short,
+            is Byte,
             is Char -> "${any.toString()}"
             else -> "\"${any.toString()}\""
         }
