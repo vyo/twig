@@ -1,10 +1,13 @@
 package io.github.vyo.twig.logger
 
+import io.github.vyo.twig.appender.Appender
+
 /**
  * Created by Manuel Weidmann on 28.11.2015.
  */
 interface LoggerInterface {
 
+    var appender: Appender
     var threshold: Level
     val customFields: Array<String>
 
