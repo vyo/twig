@@ -3,6 +3,17 @@
 This project tries to adhere to the [semantic versioning](http://semver.org/) and [change log](http://keepachangelog.com/) guidelines.
 
 ##  [Unreleased]
+### Added
+- log entries are bunyan-parseable
+- log entries have additional fields
+    -   hostname
+    -   pid
+    -   v
+### Changed
+- loggers inherit the root logger's Appender by default, i.e. ConsoleAppender
+- log entry elememts changed
+    -   value of key 'time' was in milliseconds, is now ISO-formatted:  yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
+    -   key 'message' changed to 'msg'
 
 ##  [v0.7.0] - 2015-11-28
 ### Added
