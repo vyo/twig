@@ -3,6 +3,8 @@
 This project tries to adhere to the [semantic versioning](http://semver.org/) and [change log](http://keepachangelog.com/) guidelines.
 
 ##  [Unreleased]
+
+##  [v0.10.0] - 2015-11-29
 ### Added
 - log calls now return ```Promise<Unit, Exception>``` instead of ```Unit```:
     -   log entry creation can now be waited on
