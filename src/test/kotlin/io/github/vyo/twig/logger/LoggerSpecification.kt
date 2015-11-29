@@ -45,6 +45,10 @@ class LoggerSpec : Spek() {
 
         given("nothing") {
 
+            beforeOn {
+                DummyLog.clear()
+            }
+
             on("initialisation") {
                 it("should setup root logger log threshold") {
                     shouldEqual(Level.INFO, Logger.threshold)
@@ -55,12 +59,8 @@ class LoggerSpec : Spek() {
                 it("should be able to log messages as 'TwigRootLogger'") {
                     Logger.info("root test message").get()
 
-                    var entryFound: Boolean = false
-                    for (entry in DummyLog.entries) {
-                        if (entry.contains("TwigRootLogger") && entry.contains("root test message"))
-                            entryFound = true
-                    }
-                    shouldBeTrue(entryFound)
+                    shouldBeTrue(DummyLog.entries[0].contains("TwigRootLogger") && DummyLog.entries[0].contains("root test " +
+                            "message"))
                 }
             }
 
@@ -77,19 +77,20 @@ class LoggerSpec : Spek() {
             }
         }
 
-        given("a logger with a custom field name \'custom\'") {
+        given("a logger") {
+
+            beforeOn {
+                DummyLog.clear()
+            }
 
             val customLogger: Logger = Logger("customTestLogger")
-            on("invocation") {
+            on("invocation with custom field audit and value classified") {
                 it("should add the custom field to the JSON log entry") {
+                    DummyLog.clear()
                     customLogger.info("some test message", Pair("audit", "classified"), Pair("retention", "none")).get()
 
-                    var entryFound: Boolean = false
-                    for (entry in DummyLog.entries) {
-                        if (entry.contains("classified") && entry.contains("customTestLogger")) entryFound =
-                                true
-                    }
-                    shouldBeTrue(entryFound)
+                    shouldBeTrue(DummyLog.entries[0].contains("classified") && DummyLog.entries[0].contains
+                    ("customTestLogger"))
                 }
             }
         }
