@@ -121,24 +121,24 @@ open class Logger(val caller: Any,
 
             entry += ",${escape("v")}:${escape(0)}}"
             appender.write(entry)
-            //        } fail {
-            //            var entry: String = "{${escape("hostname")}:${escape(hostName)}," +
-            //                    "${escape("pid")}:$pid," +
-            //                    "${escape("thread")}:${escape(thread)}," +
-            //                    "${escape("time")}:${escape(isoFormat.format(Date(System.currentTimeMillis())))}," +
-            //                    "${escape("level")}:${Level.FATAL.toInt()}" +
-            //                    "${escape("name")}:${escape(this)}," +
-            //                    "${escape("msg")}:${escape("logging failed: ${it.message}")}," +
-            //                    "${escape("originalLevel")}:${escape(level.toInt())}," +
-            //                    "${escape("originalName")}:${escape(caller)}," +
-            //                    "${escape("originalMessage")}:${escape(message)}"
-            //
-            //            for (customMessage in customMessages) {
-            //                entry += ",${escape(customMessage.first)}:${escape(customMessage.second)}"
-            //            }
-            //
-            //            entry += ",${escape("v")}:0}"
-            //            appender.write(entry)
+        } fail {
+            var entry: String = "{${escape("hostname")}:${escape(hostName)}," +
+                    "${escape("pid")}:${escape(pid)}," +
+                    "${escape("thread")}:${escape(thread)}," +
+                    "${escape("time")}:${escape(isoFormat.format(Date(System.currentTimeMillis())))}," +
+                    "${escape("level")}:${Level.FATAL.toInt()}" +
+                    "${escape("name")}:${escape(this)}," +
+                    "${escape("msg")}:${escape("logging failed: ${it.message}")}," +
+                    "${escape("original level")}:${escape(level.toInt())}," +
+                    "${escape("original name")}:${escape(caller)}," +
+                    "${escape("original message")}:${escape(message)}"
+
+            for (customMessage in customMessages) {
+                entry += ",${"original " + escape(customMessage.first)}:${escape(customMessage.second)}"
+            }
+
+            entry += ",${escape("v")}:${escape(0)}"
+            appender.write(entry)
         }
     }
 
