@@ -1,4 +1,4 @@
-twig
+Twig
 ========================================
 
 Opinionated minimal logging inspired by and compatible with [node-bunyan](https://github.com/trentm/node-bunyan)
