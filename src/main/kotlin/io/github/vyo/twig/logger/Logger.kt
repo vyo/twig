@@ -24,6 +24,10 @@ open class Logger(val caller: Any,
 
     companion object global {
 
+        private final val TWIG_LEVEL: String = "TWIG_LEVEL"
+        private final val TWIG_WORKERS: String = "TWIG_WORKERS"
+        private final val TWIG_QUEUE: String = "TWIG_QUEUE"
+
         var appender: Appender = ConsoleAppender()
             set(value) {
                 field = value
@@ -47,17 +51,43 @@ open class Logger(val caller: Any,
         init {
             isoFormat.timeZone = timeZone
 
+            val queue: Int
+            val workers: Int
+
+            val levelEnv: String? = System.getenv(TWIG_LEVEL)
+            try {
+                if (levelEnv is String) {
+                    level = Level.valueOf(levelEnv)
+                }
+            } catch (exception: IllegalArgumentException) {
+                level = Level.INFO
+            }
+
+            val queueEnv: String? = System.getenv(TWIG_QUEUE)
+            if (queueEnv is String && Integer.parseInt(queueEnv) is Int) {
+                queue = Integer.parseInt(queueEnv)
+            } else {
+                queue = 1024
+            }
+
+            val workerEnv: String? = System.getenv(TWIG_WORKERS)
+            if (workerEnv is String && Integer.parseInt(workerEnv) is Int) {
+                workers = Integer.parseInt(workerEnv)
+            } else {
+                workers = Runtime.getRuntime().availableProcessors()
+            }
+
             Kovenant.context {
                 callbackContext {
                     dispatcher {
-                        concurrentTasks = Runtime.getRuntime().availableProcessors()
-                        workQueue = disruptorWorkQueue()
+                        concurrentTasks = workers
+                        workQueue = disruptorWorkQueue(capacity = queue)
                     }
                 }
             }
 
-            logger.info("logging worker count: ${Runtime.getRuntime().availableProcessors()}")
-            logger.info("logging work queue size: 1024")
+            logger.info("logging worker count: $workers")
+            logger.info("logging work queue size: $queue")
             logger.info("root log level: $level")
         }
     }
