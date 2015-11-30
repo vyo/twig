@@ -20,7 +20,7 @@ import kotlin.concurrent.currentThread
 
 open class Logger(val caller: Any,
                   override var appender: Appender = Logger.root.appender) : LoggerInterface {
-    override var threshold: Level = root.threshold
+    override var level: Level = root.level
 
     companion object root {
 
@@ -31,10 +31,10 @@ open class Logger(val caller: Any,
                 logger.info("appender $appender")
             }
 
-        var threshold: Level = Level.INFO
+        var level: Level = Level.INFO
             set(value) {
                 field = value
-                logger.info("log level $threshold")
+                logger.info("log level $level")
             }
 
         private val processInfo: String = ManagementFactory.getRuntimeMXBean().name
@@ -58,7 +58,7 @@ open class Logger(val caller: Any,
 
             logger.info("logging worker count: ${Runtime.getRuntime().availableProcessors()}")
             logger.info("logging work queue size: 1024")
-            logger.info("root log level: $threshold")
+            logger.info("root log level: $level")
         }
     }
 
@@ -79,7 +79,7 @@ open class Logger(val caller: Any,
     }
 
     override fun log(level: Level, message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
-        if (level < threshold) return async { }
+        if (level < level) return async { }
         val thread: Thread = currentThread
         return async {
             var entry: String = "{${escape("hostname")}:${escape(hostName)}," +

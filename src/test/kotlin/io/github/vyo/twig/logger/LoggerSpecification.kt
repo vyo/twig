@@ -51,7 +51,7 @@ class LoggerSpec : Spek() {
 
             on("initialisation") {
                 it("should setup root logger log threshold") {
-                    shouldEqual(Level.INFO, Logger.threshold)
+                    shouldEqual(Level.INFO, Logger.level)
                 }
             }
 

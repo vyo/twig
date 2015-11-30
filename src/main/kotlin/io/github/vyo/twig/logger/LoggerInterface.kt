@@ -9,7 +9,7 @@ import nl.komponents.kovenant.Promise
 interface LoggerInterface {
 
     var appender: Appender
-    var threshold: Level
+    var level: Level
     
     fun log(level: Level, message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception>
 

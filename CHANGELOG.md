@@ -4,6 +4,7 @@ This project tries to adhere to the [semantic versioning](http://semver.org/) an
 
 ##  [Unreleased]
 ### Changed
+- improve consistency by renaming ```threshold``` to ```level```
 - Logger.root is not a logger itself anymore
 - Logger.root internals are now hidden, excepting
     -   appender
