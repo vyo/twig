@@ -42,7 +42,7 @@ open class Logger(val caller: Any,
         private val hostName: String = processInfo.split('@')[1]
         private val timeZone: TimeZone = TimeZone.getTimeZone("UTC");
         private val isoFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-        private val logger: Logger = Logger("TwigRootLogger")
+        private val logger: Logger = Logger("twig")
 
         init {
             isoFormat.timeZone = timeZone
