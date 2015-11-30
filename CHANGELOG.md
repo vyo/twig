@@ -3,6 +3,8 @@
 This project adheres to the [semantic versioning](http://semver.org/) and [change log](http://keepachangelog.com/) guidelines.
 
 ##  [Unreleased]
+
+##  [v1.0.1] - 2015-11-30
 ### Fixed
 - logger creation from Java required passing in an Appender
 
