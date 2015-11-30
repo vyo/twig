@@ -18,8 +18,8 @@ import kotlin.concurrent.currentThread
  * Created by Manuel Weidmann on 24.11.2015.
  */
 
-open class Logger(val caller: Any,
-                  var appender: Appender = Logger.global.appender) {
+open class Logger @JvmOverloads constructor(val caller: Any,
+                                            var appender: Appender = Logger.global.appender) {
     var level: Level = global.level
 
     companion object global {
