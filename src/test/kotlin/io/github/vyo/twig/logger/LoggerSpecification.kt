@@ -55,18 +55,17 @@ class LoggerSpec : Spek() {
                 }
             }
 
-            on("invocation") {
-                it("should be able to log messages as 'TwigRootLogger'") {
-                    Logger.info("root test message").get()
-
-                    shouldBeTrue(DummyLog.entries[0].contains("TwigRootLogger") && DummyLog.entries[0].contains("root test " +
-                            "message"))
-                }
-            }
-
             on("changing the root log level") {
                 it("should log the change") {
+                    DummyLog.clear()
 
+                    Logger.root.appender = DummyLog.appender
+
+                    // wait and hope the log has been written when we wake up
+                    Thread.sleep(50)
+
+                    shouldBeTrue(DummyLog.entries[0].contains("appender") && DummyLog.entries[0].contains
+                    ("StringAppender"))
                 }
             }
 

@@ -22,17 +22,17 @@ open class Logger(val caller: Any,
                   override var appender: Appender = Logger.root.appender) : LoggerInterface {
     override var threshold: Level = root.threshold
 
-    companion object root : LoggerInterface {
-        override var appender: Appender = ConsoleAppender()
+    companion object root {
+        var appender: Appender = ConsoleAppender()
             set(value) {
                 field = value
                 logger.appender = value
-                info("appender $appender")
+                logger.info("appender $appender")
             }
-        override var threshold: Level = Level.INFO
+        var threshold: Level = Level.INFO
             set(value) {
                 field = value
-                info("log level $threshold")
+                logger.info("log level $threshold")
             }
         val processInfo: String = ManagementFactory.getRuntimeMXBean().name
         val pid: Int = Integer.parseInt(processInfo.split('@')[0])
@@ -55,37 +55,9 @@ open class Logger(val caller: Any,
                     }
                 }
             }
-            info("logging worker count: ${Runtime.getRuntime().availableProcessors()}")
-            info("logging work queue size: 1024")
-            info("root log level: $threshold")
-        }
-
-        override fun log(level: Level, message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
-            return logger.log(level, message)
-        }
-
-        override fun trace(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
-            return logger.trace(message)
-        }
-
-        override fun debug(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
-            return logger.debug(message)
-        }
-
-        override fun info(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
-            return logger.info(message)
-        }
-
-        override fun warn(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
-            return logger.warn(message)
-        }
-
-        override fun error(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
-            return logger.error(message)
-        }
-
-        override fun fatal(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
-            return logger.fatal(message)
+            logger.info("logging worker count: ${Runtime.getRuntime().availableProcessors()}")
+            logger.info("logging work queue size: 1024")
+            logger.info("root log level: $threshold")
         }
     }
 
