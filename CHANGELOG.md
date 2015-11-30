@@ -3,6 +3,8 @@
 This project tries to adhere to the [semantic versioning](http://semver.org/) and [change log](http://keepachangelog.com/) guidelines.
 
 ##  [Unreleased]
+### Changed
+- Logger.root is not a logger itself anymore
 
 ##  [v0.10.0] - 2015-11-29
 ### Added
