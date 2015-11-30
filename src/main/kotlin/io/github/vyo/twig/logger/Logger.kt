@@ -23,30 +23,30 @@ open class Logger(val caller: Any,
     override var threshold: Level = root.threshold
 
     companion object root {
+
         var appender: Appender = ConsoleAppender()
             set(value) {
                 field = value
                 logger.appender = value
                 logger.info("appender $appender")
             }
+
         var threshold: Level = Level.INFO
             set(value) {
                 field = value
                 logger.info("log level $threshold")
             }
-        val processInfo: String = ManagementFactory.getRuntimeMXBean().name
-        val pid: Int = Integer.parseInt(processInfo.split('@')[0])
-        val hostName: String = processInfo.split('@')[1]
-        val timeZone: TimeZone = TimeZone.getTimeZone("UTC");
-        val isoFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 
-        init {
-            isoFormat.timeZone = timeZone
-        }
-
+        private val processInfo: String = ManagementFactory.getRuntimeMXBean().name
+        private val pid: Int = Integer.parseInt(processInfo.split('@')[0])
+        private val hostName: String = processInfo.split('@')[1]
+        private val timeZone: TimeZone = TimeZone.getTimeZone("UTC");
+        private val isoFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
         private val logger: Logger = Logger("TwigRootLogger")
 
         init {
+            isoFormat.timeZone = timeZone
+
             Kovenant.context {
                 callbackContext {
                     dispatcher {
@@ -55,6 +55,7 @@ open class Logger(val caller: Any,
                     }
                 }
             }
+
             logger.info("logging worker count: ${Runtime.getRuntime().availableProcessors()}")
             logger.info("logging work queue size: 1024")
             logger.info("root log level: $threshold")
