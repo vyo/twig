@@ -19,8 +19,8 @@ import kotlin.concurrent.currentThread
  */
 
 open class Logger(val caller: Any,
-                  override var appender: Appender = Logger.root.appender) : LoggerInterface {
-    override var level: Level = root.level
+                  var appender: Appender = Logger.root.appender) {
+    var level: Level = root.level
 
     companion object root {
 
@@ -78,7 +78,7 @@ open class Logger(val caller: Any,
         }
     }
 
-    override fun log(level: Level, message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
+    fun log(level: Level, message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
         if (level < level) return async { }
         val thread: Thread = currentThread
         return async {
@@ -118,27 +118,27 @@ open class Logger(val caller: Any,
     }
 
 
-    override fun trace(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
+    fun trace(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
         return log(Level.TRACE, message, *customMessages)
     }
 
-    override fun debug(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
+    fun debug(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
         return log(Level.DEBUG, message, *customMessages)
     }
 
-    override fun info(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
+    fun info(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
         return log(Level.INFO, message, *customMessages)
     }
 
-    override fun warn(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
+    fun warn(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
         return log(Level.WARN, message, *customMessages)
     }
 
-    override fun error(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
+    fun error(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
         return log(Level.ERROR, message, *customMessages)
     }
 
-    override fun fatal(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
+    fun fatal(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
         return log(Level.FATAL, message, *customMessages)
     }
 }
