@@ -1,13 +1,17 @@
 #   change log
 
-This project tries to adhere to the [semantic versioning](http://semver.org/) and [change log](http://keepachangelog.com/) guidelines.
+This project adheres to the [semantic versioning](http://semver.org/) and [change log](http://keepachangelog.com/) guidelines.
 
 ##  [Unreleased]
+
+##  [v1.0.0] - 2015-11-30
 ### Added
 - startup configuration via environment variables
     -   TWIG_LEVEL: initial global log level; default is ```INFO```
     -   TWIG_QUEUE: work queue size, will be rounded up to a power of two; default is ```1024```
     -   TWIG_WORKERS: maximum number of concurrent tasks; default is ```number of processors```
+### Changed
+- Logger.root is now Logger.global
 
 ##  [v0.11.0] - 2015-11-30
 ### Changed

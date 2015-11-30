@@ -32,13 +32,13 @@ open class Logger(val caller: Any,
             set(value) {
                 field = value
                 logger.appender = value
-                logger.info("appender $appender")
+                logger.info("global appender $appender")
             }
 
         var level: Level = Level.INFO
             set(value) {
                 field = value
-                logger.info("log level $level")
+                logger.info("global log level $level")
             }
 
         private val processInfo: String = ManagementFactory.getRuntimeMXBean().name
@@ -88,7 +88,7 @@ open class Logger(val caller: Any,
 
             logger.info("logging worker count: $workers")
             logger.info("logging work queue size: $queue")
-            logger.info("root log level: $level")
+            if (level == Level.INFO) logger.info("global log level: $level")
         }
     }
 
