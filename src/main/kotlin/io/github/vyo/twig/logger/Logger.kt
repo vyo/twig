@@ -109,7 +109,7 @@ open class Logger(val caller: Any,
                     "${escape("original message")}:${escape(message)}"
 
             for (customMessage in customMessages) {
-                entry += ",${"original " + escape(customMessage.first)}:${escape(customMessage.second)}"
+                entry += ",${escape("original " + customMessage.first)}:${escape(customMessage.second)}"
             }
 
             entry += ",${escape("v")}:${escape(0)}"
