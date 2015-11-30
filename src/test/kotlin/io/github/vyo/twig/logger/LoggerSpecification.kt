@@ -41,7 +41,7 @@ class LoggerSpec : Spek() {
     }
 
     init {
-        Logger.root.appender = DummyLog.appender
+        Logger.global.appender = DummyLog.appender
 
         given("nothing") {
 
@@ -59,7 +59,7 @@ class LoggerSpec : Spek() {
                 it("should log the change") {
                     DummyLog.clear()
 
-                    Logger.root.appender = DummyLog.appender
+                    Logger.global.appender = DummyLog.appender
 
                     // wait and hope the log has been written when we wake up
                     Thread.sleep(50)

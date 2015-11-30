@@ -19,10 +19,10 @@ import kotlin.concurrent.currentThread
  */
 
 open class Logger(val caller: Any,
-                  var appender: Appender = Logger.root.appender) {
-    var level: Level = root.level
+                  var appender: Appender = Logger.global.appender) {
+    var level: Level = global.level
 
-    companion object root {
+    companion object global {
 
         var appender: Appender = ConsoleAppender()
             set(value) {
