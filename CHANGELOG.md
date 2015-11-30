@@ -3,6 +3,8 @@
 This project tries to adhere to the [semantic versioning](http://semver.org/) and [change log](http://keepachangelog.com/) guidelines.
 
 ##  [Unreleased]
+
+##  [v0.11.0] - 2015-11-30
 ### Changed
 - drop superfluous LoggerInterface
 - improve consistency by renaming ```threshold``` to ```level```
