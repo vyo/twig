@@ -126,7 +126,7 @@ open class Logger @JvmOverloads constructor(val caller: Any,
     fun log(level: Level, message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
         if (level < level) return async { }
         val thread: Thread = currentThread
-        val time: String  = isoFormat.format(Date(System.currentTimeMillis()))
+        val time: String = isoFormat.format(Date(System.currentTimeMillis()))
         return async {
             var entry: String = "{${escape("hostname")}:${escape(hostName)}," +
                     "${escape("pid")}:${escape(pid)}," +
