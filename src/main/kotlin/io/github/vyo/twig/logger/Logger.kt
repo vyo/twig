@@ -106,8 +106,21 @@ open class Logger @JvmOverloads constructor(val caller: Any,
             is Short,
             is Byte,
             is Char -> "${any.toString()}"
-            else -> "\"${any.toString()}\""
+            else -> "\"${escapeSpecialChars(any.toString())}\""
         }
+    }
+
+    private fun escapeSpecialChars(string: String): String {
+
+        var escapedString: String = string
+        escapedString = escapedString.replace("\\", "\\\\")
+        escapedString = escapedString.replace("\n", "\\n")
+        escapedString = escapedString.replace("\r", "\\r")
+        escapedString = escapedString.replace("\b", "\\b")
+        escapedString = escapedString.replace("\t", "\\t")
+        escapedString = escapedString.replace("\"", "\\\"")
+
+        return escapedString
     }
 
     fun log(level: Level, message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {

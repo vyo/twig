@@ -5,6 +5,8 @@ This project adheres to the [semantic versioning](http://semver.org/) and [chang
 ##  [Unreleased]
 ### Added
 - exception log entries extended to contain all original entry fields
+### Fixed
+- special characters in string were not properly escaped for JSON
 
 ##  [v1.0.1] - 2015-11-30
 ### Fixed
