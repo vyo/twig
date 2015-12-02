@@ -3,6 +3,8 @@
 This project adheres to the [semantic versioning](http://semver.org/) and [change log](http://keepachangelog.com/) guidelines.
 
 ##  [Unreleased]
+
+##  [v1.0.2] - 2015-12-02
 ### Added
 - exception log entries extended to contain all original entry fields
 ### Fixed
