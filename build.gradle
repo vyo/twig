@@ -1,6 +1,7 @@
 buildscript {
     ext.kotlin_version = '1.0.0-beta-2423'
     ext.spek_version = '0.1.182'
+    ext.kovenant_version = '2.9.0'
     repositories {
         mavenCentral()
     }
@@ -34,7 +35,7 @@ compileJava {
 }
 
 group = 'io.github.vyo'
-version = '1.0.3'
+version = '1.0.4'
 description = 'Minimal bunyan-style logging for Kotlin and the JVM'
 
 ext.sonatypeUsr = project.hasProperty('sonatypeUsername') ? sonatypeUsername : ''
@@ -43,10 +44,11 @@ ext.sonatypePwd = project.hasProperty('sonatypePassword') ? sonatypePassword : '
 repositories {
     mavenCentral()
 }
+
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'nl.komponents.kovenant:kovenant:2.9.+'
-    compile 'nl.komponents.kovenant:kovenant-disruptor:2.9.+'
+    compile "nl.komponents.kovenant:kovenant:$kovenant_version"
+    compile "nl.komponents.kovenant:kovenant-disruptor:$kovenant_version"
 
     testCompile "org.jetbrains.spek:spek:$spek_version"
 }
