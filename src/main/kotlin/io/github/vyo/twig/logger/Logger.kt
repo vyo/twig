@@ -6,6 +6,8 @@ import nl.komponents.kovenant.Kovenant
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.async
 import nl.komponents.kovenant.disruptor.queue.disruptorWorkQueue
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.lang.management.ManagementFactory
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -111,11 +113,12 @@ open class Logger @JvmOverloads constructor(val caller: Any,
     fun log(level: Level, message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
         if (level < level) return async { }
         val thread: Thread = currentThread
+        val time: String  = isoFormat.format(Date(System.currentTimeMillis()))
         return async {
             var entry: String = "{${escape("hostname")}:${escape(hostName)}," +
                     "${escape("pid")}:${escape(pid)}," +
                     "${escape("thread")}:${escape(thread)}," +
-                    "${escape("time")}:${escape(isoFormat.format(Date(System.currentTimeMillis())))}," +
+                    "${escape("time")}:${escape(time)}," +
                     "${escape("level")}:${escape(level.toInt())}," +
                     "${escape("name")}:${escape(caller)}," +
                     "${escape("msg")}:${escape(message)}"
@@ -127,22 +130,30 @@ open class Logger @JvmOverloads constructor(val caller: Any,
             entry += ",${escape("v")}:${escape(0)}}"
             appender.write(entry)
         } fail {
+            //get the stacktrace
+            var writer: StringWriter = StringWriter()
+            it.printStackTrace(PrintWriter(writer))
+            var stacktrace = writer.toString().replace("\n", "\\n")
+
             var entry: String = "{${escape("hostname")}:${escape(hostName)}," +
                     "${escape("pid")}:${escape(pid)}," +
                     "${escape("thread")}:${escape(thread)}," +
                     "${escape("time")}:${escape(isoFormat.format(Date(System.currentTimeMillis())))}," +
                     "${escape("level")}:${Level.FATAL.toInt()}" +
                     "${escape("name")}:${escape(this)}," +
-                    "${escape("msg")}:${escape("logging failed: ${it.message}")}," +
+                    "${escape("msg")}:${escape("logging exception: ${it.javaClass}")}," +
+                    "${escape("exception message")}:${escape("${it.message}")}," +
+                    "${escape("exception stacktrace")}:${escape(stacktrace)}," +
+                    "${escape("original time")}:${escape(time)}," +
                     "${escape("original level")}:${escape(level.toInt())}," +
                     "${escape("original name")}:${escape(caller)}," +
-                    "${escape("original message")}:${escape(message)}"
+                    "${escape("original msg")}:${escape(message)}"
 
             for (customMessage in customMessages) {
                 entry += ",${escape("original " + customMessage.first)}:${escape(customMessage.second)}"
             }
 
-            entry += ",${escape("v")}:${escape(0)}"
+            entry += ",${escape("v")}:${escape(0)}}"
             System.err.println(entry)
         }
     }
