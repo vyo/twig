@@ -4,6 +4,12 @@ This project adheres to the [semantic versioning](http://semver.org/) and [chang
 
 ##  [Unreleased]
 
+##  [v1.0.3] - 2015-12-02
+### Changed
+- re-generated gradle wrapper scripts
+### Fixed
+- superfluous was compiled into the jar
+
 ##  [v1.0.2] - 2015-12-02
 ### Added
 - exception log entries extended to contain all original entry fields
