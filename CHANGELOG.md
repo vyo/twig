@@ -4,6 +4,10 @@ This project adheres to the [semantic versioning](http://semver.org/) and [chang
 
 ##  [Unreleased]
 
+##  [v1.0.5] - 2015-12-07
+### Fixed
+- log level threshold was effectively ignored
+
 ##  [v1.0.4] - 2015-12-02
 ### Changed
 - made kovenant dependency versions explicit and variable
