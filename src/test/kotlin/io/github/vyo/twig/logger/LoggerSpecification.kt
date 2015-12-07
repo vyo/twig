@@ -19,7 +19,7 @@ class LoggerSpec : Spek() {
             }
         }
 
-        val appender: StringAppender = StringAppender()
+        private val appender: StringAppender = StringAppender()
 
         var entries: ArrayList<String> = appender.log
             get() {
@@ -90,6 +90,36 @@ class LoggerSpec : Spek() {
 
                     shouldBeTrue(DummyLog.entries[0].contains("classified") && DummyLog.entries[0].contains
                     ("customTestLogger"))
+                }
+            }
+
+            on("on logging with a level below the logger's threshold") {
+                it("should not log the message") {
+                    DummyLog.clear()
+                    customLogger.level = Level.INFO
+                    customLogger.trace("unimportant message").get()
+
+                    shouldBeTrue(DummyLog.size() == 0)
+                }
+            }
+
+            on("on logging with a level equal to the logger's threshold") {
+                it("should log the message") {
+                    DummyLog.clear()
+                    customLogger.level = Level.INFO
+                    customLogger.info("important message").get()
+
+                    shouldBeTrue(DummyLog.size() == 1)
+                }
+            }
+
+            on("on logging with a level higher than the logger's threshold") {
+                it("should log the message") {
+                    DummyLog.clear()
+                    customLogger.level = Level.WARN
+                    customLogger.warn("very important message").get()
+
+                    shouldBeTrue(DummyLog.size() == 1)
                 }
             }
         }
