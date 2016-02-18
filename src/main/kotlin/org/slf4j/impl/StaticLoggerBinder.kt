@@ -1,16 +1,23 @@
-package io.github.vyo.twig.logger
+package org.slf4j.impl
 
+import io.github.vyo.twig.logger.SLF4JFactory
 import org.slf4j.ILoggerFactory
 import org.slf4j.spi.LoggerFactoryBinder
 
 /**
  * Created by Manuel Weidmann on 18.02.16.
  */
-object SLF4JBinder : LoggerFactoryBinder {
+object StaticLoggerBinder : LoggerFactoryBinder {
 
-    public var REQUESTED_API_VERSION: String = "1.7.16"
+    @JvmStatic
+    var REQUESTED_API_VERSION: String = "1.7.16"
 
     private val factory: SLF4JFactory = SLF4JFactory()
+
+    @JvmStatic
+    fun getSingleton(): StaticLoggerBinder {
+        return StaticLoggerBinder
+    }
 
     override fun getLoggerFactory(): ILoggerFactory? {
         return factory
