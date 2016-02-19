@@ -1,8 +1,7 @@
 buildscript {
-    ext.kotlin_version = '1.0.0-beta-2423'
+    ext.kotlin_version = '1.0.0'
     ext.spek_version = '0.1.182'
-    ext.kovenant_version = '2.9.0'
-    ext.slf4j_version = '1.7.16'
+    ext.kovenant_version = '3.0.0'
     repositories {
         mavenCentral()
     }
@@ -36,7 +35,7 @@ compileJava {
 }
 
 group = 'io.github.vyo'
-version = '1.0.5'
+version = '1.0.6'
 description = 'Minimal bunyan-style logging for Kotlin and the JVM'
 
 ext.sonatypeUsr = project.hasProperty('sonatypeUsername') ? sonatypeUsername : ''

@@ -4,7 +4,7 @@ import io.github.vyo.twig.appender.Appender
 import io.github.vyo.twig.appender.ConsoleAppender
 import nl.komponents.kovenant.Kovenant
 import nl.komponents.kovenant.Promise
-import nl.komponents.kovenant.async
+import nl.komponents.kovenant.task
 import nl.komponents.kovenant.disruptor.queue.disruptorWorkQueue
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -12,7 +12,6 @@ import java.lang.management.ManagementFactory
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.concurrent.currentThread
 
 /**
  * Default logger implementation for Twig
@@ -124,10 +123,10 @@ open class Logger @JvmOverloads constructor(val caller: Any,
     }
 
     fun log(level: Level, message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
-        if (level < this.level) return async { }
-        val thread: Thread = currentThread
+        if (level < this.level) return task { }
+        val thread: Thread = java.lang.Thread.currentThread()
         val time: String = isoFormat.format(Date(System.currentTimeMillis()))
-        return async {
+        return task {
             var entry: String = "{${escape("hostname")}:${escape(hostName)}," +
                     "${escape("pid")}:${escape(pid)}," +
                     "${escape("thread")}:${escape(thread)}," +

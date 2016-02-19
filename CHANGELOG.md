@@ -4,6 +4,10 @@ This project adheres to the [semantic versioning](http://semver.org/) and [chang
 
 ##  [Unreleased]
 
+##  [v1.0.6] - 2016-02-19
+### Changed
+- switch to kotlin 1.0.0 and kovenant 3.0.0
+
 ##  [v1.0.5] - 2015-12-07
 ### Fixed
 - log level threshold was effectively ignored
