@@ -35,7 +35,7 @@ compileJava {
 }
 
 group = 'io.github.vyo'
-version = '1.0.5'
+version = '1.0.6'
 description = 'Minimal bunyan-style logging for Kotlin and the JVM'
 
 ext.sonatypeUsr = project.hasProperty('sonatypeUsername') ? sonatypeUsername : ''
