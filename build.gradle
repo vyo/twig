@@ -65,6 +65,7 @@ task wrapper(type: Wrapper) {
 
 jar {
     baseName = 'twig-slf4j'
+    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
 }
 
 task javadocJar(type: Jar) {
