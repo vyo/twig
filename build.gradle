@@ -2,6 +2,7 @@ buildscript {
     ext.kotlin_version = '1.0.0'
     ext.spek_version = '0.1.182'
     ext.kovenant_version = '3.0.0'
+    ext.slf4j_version = '1.7.16'
     repositories {
         mavenCentral()
     }
@@ -45,6 +46,10 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    provided
+}
+
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "nl.komponents.kovenant:kovenant:$kovenant_version"
@@ -54,6 +59,9 @@ dependencies {
     testCompile "org.jetbrains.spek:spek:$spek_version"
 }
 sourceSets {
+    main {
+      compileClasspath += configurations.provided
+    }
     main.java.srcDirs += 'src/main/kotlin'
     test.java.srcDirs += 'src/test/kotlin'
 }
