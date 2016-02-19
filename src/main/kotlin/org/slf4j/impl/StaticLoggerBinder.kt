@@ -1,6 +1,6 @@
 package org.slf4j.impl
 
-import io.github.vyo.twig.logger.SLF4JFactory
+import io.github.vyo.twig.slf4j.Factory
 import org.slf4j.ILoggerFactory
 import org.slf4j.spi.LoggerFactoryBinder
 
@@ -12,7 +12,7 @@ object StaticLoggerBinder : LoggerFactoryBinder {
     @JvmStatic
     var REQUESTED_API_VERSION: String = "1.7.16"
 
-    private val factory: SLF4JFactory = SLF4JFactory()
+    private val factory: Factory = Factory()
 
     @JvmStatic
     fun getSingleton(): StaticLoggerBinder {

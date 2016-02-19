@@ -1,12 +1,13 @@
-package io.github.vyo.twig.logger
+package io.github.vyo.twig.slf4j
 
+import io.github.vyo.twig.logger.Level
 import org.slf4j.Logger
 import org.slf4j.Marker
 
 /**
  * Created by Manuel Weidmann on 18.02.16.
  */
-class SLF4JAdapter : Logger {
+class Adapter : Logger {
 
     lateinit var twig: io.github.vyo.twig.logger.Logger
 
