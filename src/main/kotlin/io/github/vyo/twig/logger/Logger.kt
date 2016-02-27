@@ -145,7 +145,7 @@ open class Logger @JvmOverloads constructor(val caller: Any,
             //get the stacktrace
             var writer: StringWriter = StringWriter()
             it.printStackTrace(PrintWriter(writer))
-            var stacktrace = writer.toString().replace("\n", "\\n")
+            var stacktrace = escape(writer.toString())
 
             var entry: String = "{${escape("hostname")}:${escape(hostName)}," +
                     "${escape("pid")}:${escape(pid)}," +
