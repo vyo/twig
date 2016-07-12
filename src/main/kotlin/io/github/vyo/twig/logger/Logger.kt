@@ -96,6 +96,7 @@ open class Logger @JvmOverloads constructor(val caller: Any,
 
     private fun escape(any: Any): String {
         return when (any) {
+            //TODO: handle complex arrays
             is Array<*>,
             is Boolean,
             is Double,
