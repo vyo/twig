@@ -4,8 +4,6 @@ This project adheres to the [semantic versioning](http://semver.org/) and [chang
 
 ##  [Unreleased]
 
-##  [v1.1.0] - tba
-
 ##  [v1.0.6] - 2016-07-12
 ### Changed
 - switch to kotlin 1.0.0 and kovenant 3.0.0
