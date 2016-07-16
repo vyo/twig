@@ -25,9 +25,9 @@ open class Logger @JvmOverloads constructor(val caller: Any,
 
     companion object global {
 
-        private final val TWIG_LEVEL: String = "TWIG_LEVEL"
-        private final val TWIG_WORKERS: String = "TWIG_WORKERS"
-        private final val TWIG_QUEUE: String = "TWIG_QUEUE"
+        private val TWIG_LEVEL: String = "TWIG_LEVEL"
+        private val TWIG_WORKERS: String = "TWIG_WORKERS"
+        private val TWIG_QUEUE: String = "TWIG_QUEUE"
 
         var appender: Appender = ConsoleAppender()
             set(value) {
@@ -48,6 +48,43 @@ open class Logger @JvmOverloads constructor(val caller: Any,
         private val timeZone: TimeZone = TimeZone.getTimeZone("UTC");
         private val isoFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
         private val logger: Logger = Logger("twig")
+
+        val defaultSerialisation = { any: Any ->
+
+            when (any) {
+            //TODO: handle complex arrays
+                is Array<*>,
+                is Boolean,
+                is Double,
+                is Float,
+                is Long,
+                is Int,
+                is Short,
+                is Byte,
+                is Char -> "${any.toString()}"
+                else -> "\"${escapeSpecialChars(any.toString())}\""
+            }
+
+        }
+
+        var serialisation = defaultSerialisation
+
+        private fun stringify(any: Any): String {
+            return serialisation(any)
+        }
+
+        private fun escapeSpecialChars(string: String): String {
+
+            var escapedString: String = string
+            escapedString = escapedString.replace("\\", "\\\\")
+            escapedString = escapedString.replace("\n", "\\n")
+            escapedString = escapedString.replace("\r", "\\r")
+            escapedString = escapedString.replace("\b", "\\b")
+            escapedString = escapedString.replace("\t", "\\t")
+            escapedString = escapedString.replace("\"", "\\\"")
+
+            return escapedString
+        }
 
         init {
             isoFormat.timeZone = timeZone
@@ -93,80 +130,50 @@ open class Logger @JvmOverloads constructor(val caller: Any,
         }
     }
 
-
-    private fun escape(any: Any): String {
-        return when (any) {
-            //TODO: handle complex arrays
-            is Array<*>,
-            is Boolean,
-            is Double,
-            is Float,
-            is Long,
-            is Int,
-            is Short,
-            is Byte,
-            is Char -> "${any.toString()}"
-            else -> "\"${escapeSpecialChars(any.toString())}\""
-        }
-    }
-
-    private fun escapeSpecialChars(string: String): String {
-
-        var escapedString: String = string
-        escapedString = escapedString.replace("\\", "\\\\")
-        escapedString = escapedString.replace("\n", "\\n")
-        escapedString = escapedString.replace("\r", "\\r")
-        escapedString = escapedString.replace("\b", "\\b")
-        escapedString = escapedString.replace("\t", "\\t")
-        escapedString = escapedString.replace("\"", "\\\"")
-
-        return escapedString
-    }
-
     fun log(level: Level, message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
         if (level < this.level) return task { }
         val thread: Thread = java.lang.Thread.currentThread()
         val time: String = isoFormat.format(Date(System.currentTimeMillis()))
         return task {
-            var entry: String = "{${escape("hostname")}:${escape(hostName)}," +
-                    "${escape("pid")}:${escape(pid)}," +
-                    "${escape("thread")}:${escape(thread)}," +
-                    "${escape("time")}:${escape(time)}," +
-                    "${escape("level")}:${escape(level.toInt())}," +
-                    "${escape("name")}:${escape(caller)}," +
-                    "${escape("msg")}:${escape(message)}"
+            var entry: String = "{${stringify("hostname")}:${stringify(hostName)}," +
+                    "${stringify("pid")}:${stringify(pid)}," +
+                    "${stringify("thread")}:${stringify(thread)}," +
+                    "${stringify("time")}:${stringify(time)}," +
+                    "${stringify("level")}:${stringify(level.toInt())}," +
+                    "${stringify("name")}:${stringify(caller)}," +
+                    "${stringify("msg")}:${stringify(message)}"
 
             for (customMessage in customMessages) {
-                entry += ",${escape(customMessage.first)}:${escape(customMessage.second)}"
+                entry += ",${stringify(customMessage.first)}:${stringify(customMessage.second)}"
             }
 
-            entry += ",${escape("v")}:${escape(0)}}"
+            entry += ",${stringify("v")}:${stringify(0)}}"
             appender.write(entry)
         } fail {
             //get the stacktrace
             var writer: StringWriter = StringWriter()
             it.printStackTrace(PrintWriter(writer))
-            var stacktrace = escape(writer.toString())
+            var stacktrace = stringify(writer.toString())
 
-            var entry: String = "{${escape("hostname")}:${escape(hostName)}," +
-                    "${escape("pid")}:${escape(pid)}," +
-                    "${escape("thread")}:${escape(thread)}," +
-                    "${escape("time")}:${escape(isoFormat.format(Date(System.currentTimeMillis())))}," +
-                    "${escape("level")}:${Level.FATAL.toInt()}" +
-                    "${escape("name")}:${escape(this)}," +
-                    "${escape("msg")}:${escape("logging exception: ${it.javaClass}")}," +
-                    "${escape("exception message")}:${escape("${it.message}")}," +
-                    "${escape("exception stacktrace")}:${escape(stacktrace)}," +
-                    "${escape("original time")}:${escape(time)}," +
-                    "${escape("original level")}:${escape(level.toInt())}," +
-                    "${escape("original name")}:${escape(caller)}," +
-                    "${escape("original msg")}:${escape(message)}"
+            var entry: String = "{${stringify("hostname")}:${stringify(hostName)}," +
+                    "${stringify("pid")}:${stringify(pid)}," +
+                    "${stringify("thread")}:${stringify(thread)}," +
+                    "${stringify("time")}:${stringify(isoFormat.format(Date(System.currentTimeMillis())))}," +
+                    "${stringify("level")}:${stringify(Level.FATAL.toInt())}" +
+                    "${stringify("name")}:${stringify(this)}," +
+                    "${stringify("msg")}:${stringify("logging exception: ${it.javaClass}")}," +
+                    "${stringify("exception message")}:${stringify("${it.message}")}," +
+                    "${stringify("exception stacktrace")}:${stringify(stacktrace)}," +
+                    "${stringify("original time")}:${stringify(time)}," +
+                    "${stringify("original level")}:${stringify(level.toInt())}," +
+                    "${stringify("original name")}:${stringify(caller)}," +
+                    "${stringify("original msg")}:${stringify(message)}"
 
             for (customMessage in customMessages) {
-                entry += ",${escape("original " + customMessage.first)}:${escape(customMessage.second)}"
+                entry += ",${stringify("original " + customMessage.first)}:${stringify(customMessage.second)}"
             }
 
-            entry += ",${escape("v")}:${escape(0)}}"
+            entry += ",${stringify("v")}:${stringify(0)}}"
             System.err.println(entry)
         }
     }
