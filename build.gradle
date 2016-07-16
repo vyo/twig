@@ -32,7 +32,7 @@ compileJava {
 }
 
 group = 'io.github.vyo'
-version = '1.1.0'
+version = '1.1.0-slf4j'
 description = 'Minimal bunyan-style logging for Kotlin and the JVM'
 
 ext.sonatypeUsr = project.hasProperty('sonatypeUsername') ? sonatypeUsername : ''
@@ -65,13 +65,11 @@ task wrapper(type: Wrapper) {
 }
 
 jar {
-    baseName = 'twig-slf4j'
     from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
 }
 
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
-    baseName = 'twig-slf4j'
 
     from javadoc
     from file('README.md')
@@ -79,7 +77,6 @@ task javadocJar(type: Jar) {
 
 task sourcesJar(type: Jar) {
     classifier = 'sources'
-    baseName = 'twig-slf4j'
 
     from sourceSets.main.allSource
 }
