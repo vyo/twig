@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <title>Twig by vyo</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Twig</h1>
+        <h2>Minimal bunyan-style logging for Kotlin and the JVM</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/vyo/twig/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/vyo/twig/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/vyo/twig" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1>
+<a id="twig" class="anchor" href="#twig" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Twig</h1>
+
+<p>Opinionated minimal logging inspired by and compatible with <a href="https://github.com/trentm/node-bunyan">node-bunyan</a></p>
+
+<hr>
+
+<h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Features</h2>
+
+<ul>
+<li>JSON formatted, <a href="https://github.com/trentm/node-bunyan">bunyan</a>-conformant log entries</li>
+<li>asynchronous logging, powered by <a href="http://kovenant.komponents.nl/">Kovenant</a> and <a href="https://lmax-exchange.github.io/disruptor/">Disruptor</a>
+</li>
+<li>console only by default</li>
+<li>easily extendable and customisable via simple Appender interface</li>
+<li>startup configuration via optional environment variables</li>
+</ul>
+
+<h3>
+<a id="basic" class="anchor" href="#basic" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Basic</h3>
+
+<p>Having a TestObject</p>
+
+<div class="highlight highlight-source-Kotlin"><pre>object <span class="pl-en">TestObject</span> {
+    <span class="pl-k">val</span> <span class="pl-en">logger</span><span class="pl-k">:</span> Logger <span class="pl-k">=</span> Logger(<span class="pl-c1">this</span>)
+
+    <span class="pl-k">fun</span> <span class="pl-en">dummyFunction</span>() {
+        logger<span class="pl-k">.</span>info(<span class="pl-s"><span class="pl-pds">"</span>dummy<span class="pl-pds">"</span></span>)
+    }
+}</pre></div>
+
+<p>and calling its <code>dummyFunction</code> will result in a log entry similar to</p>
+
+<div class="highlight highlight-source-json"><pre>{<span class="pl-s"><span class="pl-pds">"</span>hostname<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>vyo-pc<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>pid<span class="pl-pds">"</span></span>:<span class="pl-c1">6484</span>,<span class="pl-s"><span class="pl-pds">"</span>thread<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>Thread[main,5,]<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>time<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>2015-11-30T18:55:35.092Z<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>level<span class="pl-pds">"</span></span>:<span class="pl-c1">30</span>,<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>io.github.vyo.twig.TestObject@12aba81<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>msg<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>dummy<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>v<span class="pl-pds">"</span></span>:<span class="pl-c1">0</span>}</pre></div>
+
+<h3>
+<a id="custom-fields" class="anchor" href="#custom-fields" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Custom Fields</h3>
+
+<p>You may pass in an arbitrary number of <code>Pair&lt;String, Any&gt;</code> to create additional custom log entry fields</p>
+
+<pre><code>logger.info("dummy", Pair("my custom field", "my custom content"), Pair("my logger", logger))
+</code></pre>
+
+<pre><code>{"hostname":"vyo-pc","pid":6156,"thread":"Thread[main,5,]","time":"2015-11-30T19:09:58.507Z","level":30,"name":"io.github.vyo.twig.TestObject@16e898f","msg":"dummy","my custom field":"my custom content","my logger":"io.github.vyo.twig.logger.Logger@1a97992","v":0}
+</code></pre>
+
+<h3>
+<a id="auto-expanded-throwables" class="anchor" href="#auto-expanded-throwables" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Auto-expanded Throwables</h3>
+
+<p>You may pass throwables, i.e. exceptions and errors, and they will be automatically expanded to both
+a short message and an accompanying stacktrace.</p>
+
+<p>Stacktraces will only be logged out at DEBUG level (configurable) or below. They will be put into a custom field
+called '<em>stacktrace</em>' in the form of an array. </p>
+
+<pre><code>val logger = Logger("twig")
+
+try {
+    Integer.parseInt("not an int")
+} catch (e: Exception) {
+    logger.error(e)
+    logger.debug(e)
+}
+</code></pre>
+
+<p>will lead to</p>
+
+<pre><code>{"hostname":"vyo-pc"","pid":6580,"thread":"Thread[main,5,]","time":"2015-11-30T19:38:45.037Z","level":50,"name":"twig","msg":"java.lang.NumberFormatException: For input string: \"not an int\"","v":0}
+{"hostname":"vyo-pc"","pid":6580,"thread":"Thread[main,5,]","time":"2015-11-30T19:38:45.037Z","level":20,"name":"twig","msg":"java.lang.NumberFormatException: For input string: \"not an int\"","stacktrace":["java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)","java.lang.Integer.parseInt(Integer.java:580)","java.lang.Integer.parseInt(Integer.java:615)"],"v":0}
+</code></pre>
+
+<h3>
+<a id="bunyan-cli" class="anchor" href="#bunyan-cli" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bunyan CLI</h3>
+
+<p>Piped into the bunyan cli the preceding log entry will be pretty-printed like this</p>
+
+<pre><code>[2015-11-30T19:09:58.507Z]  INFO: io.github.vyo.twig.TestObject@16e898f/6156 on vyo-pc: dummy (thread=Thread[main,5,], my custom field="my custom content", my logger=io.github.vyo.twig.logger.Logger@1a97992)
+</code></pre>
+
+<h3>
+<a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Configuration</h3>
+
+<p><strong><em>Note</em></strong>: You may configure global options by referencing either <code>Logger.*</code> or <code>Logger.global.*</code>.</p>
+
+<p>The configuration is logged on startup; by default </p>
+
+<ul>
+<li>the global log level will be INFO, </li>
+<li>the worker amount will be set to the system's available processors,</li>
+<li>the log queue size will be set to 1024,</li>
+<li>throwables will be auto-expanded at DEBUG level or below,</li>
+<li>and auto-expanded throwables will come with a stacktrace of 50 lines at most.</li>
+</ul>
+
+<pre><code>{"hostname":"vyo-pc","pid":1144,"thread":"Thread[main,5,]","time":"2015-11-30T19:36:28.220Z","level":30,"name":"twig","msg":"logging worker count: 4","v":0}
+{"hostname":"vyo-pc","pid":1144,"thread":"Thread[main,5,]","time":"2015-11-30T19:36:28.220Z","level":30,"name":"twig","msg":"logging work queue size: 1024","v":0}
+{"hostname":"vyo-pc","pid":1144,"thread":"Thread[main,5,]","time":"2015-11-30T19:36:28.220Z","level":30,"name":"twig","msg":"global log level: INFO","v":0}
+{"hostname":"vyo-pc"","pid":6580,"thread":"Thread[main,5,]","time":"2015-11-30T19:38:45.037Z","level":30,"name":"twig","msg":"throwable expansion level: DEBUG","v":0}
+{"hostname":"vyo-pc"","pid":6580,"thread":"Thread[main,5,]","time":"2015-11-30T19:38:45.037Z","level":30,"name":"twig","msg":"throwable expansion depth: 50","v":0}
+</code></pre>
+
+<p>Setting up the following environment variables in advance</p>
+
+<div class="highlight highlight-source-shell"><pre>TWIG_LEVEL=TRACE
+TWIG_QUEUE=64
+TWIG_WORKERS=1
+TWIG_EXPANSION_LEVEL=TRACE
+TWIG_EXPANSION_DEPTH=100</pre></div>
+
+<pre><code>{"hostname":"vyo-pc"","pid":6580,"thread":"Thread[main,5,]","time":"2015-11-30T19:38:45.037Z","level":30,"name":"twig","msg":"global log level TRACE","v":0}
+{"hostname":"vyo-pc"","pid":6580,"thread":"Thread[main,5,]","time":"2015-11-30T19:38:45.037Z","level":30,"name":"twig","msg":"logging work queue size: 64","v":0}
+{"hostname":"vyo-pc"","pid":6580,"thread":"Thread[main,5,]","time":"2015-11-30T19:38:45.037Z","level":30,"name":"twig","msg":"logging worker count: 1","v":0}
+{"hostname":"vyo-pc"","pid":6580,"thread":"Thread[main,5,]","time":"2015-11-30T19:38:45.037Z","level":30,"name":"twig","msg":"throwable expansion level: TRACE","v":0}
+{"hostname":"vyo-pc"","pid":6580,"thread":"Thread[main,5,]","time":"2015-11-30T19:38:45.037Z","level":30,"name":"twig","msg":"throwable expansion depth: 100","v":0}
+</code></pre>
+
+<p>Re-assigning the global log level or appender will also be logged</p>
+
+<pre><code>Logger.global.appender = ConsoleAppender()
+Logger.global.level = Level.WARN
+</code></pre>
+
+<pre><code>{"hostname":"vyo-pc"","pid":6364,"thread":"Thread[main,5,]","time":"2015-11-30T19:40:36.876Z","level":30,"name":"twig","msg":"global appender io.github.vyo.twig.appender.ConsoleAppender@1ae6ba4","v":0}
+{"hostname":"vyo-pc"","pid":6364,"thread":"Thread[main,5,]","time":"2015-11-30T19:40:36.876Z","level":30,"name":"twig","msg":"global log level WARN","v":0}
+</code></pre>
+
+<p>You may also specify your own serialiser function if the built in JSON-serialiser does not fit your needs.</p>
+
+<h4>
+<a id="default-built-in" class="anchor" href="#default-built-in" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Default (built in):</h4>
+
+<pre><code>Logger.global.serialiser = Logger.global.simpleSerialiser
+</code></pre>
+
+<h4>
+<a id="jodd" class="anchor" href="#jodd" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Jodd:</h4>
+
+<pre><code>val jodd = JsonSerializer()
+Logger.global.serialiser = { any: Any -&gt; jodd.serialize(any) }
+</code></pre>
+
+<h4>
+<a id="jackson" class="anchor" href="#jackson" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Jackson:</h4>
+
+<pre><code>val jackson = ObjectMapper()
+Logger.global.serialiser = { any: Any -&gt; jackson.writeValueAsString(any) }
+</code></pre>
+
+<h4>
+<a id="custom-function" class="anchor" href="#custom-function" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Custom function:</h4>
+
+<pre><code>fun customToJson( any: Any) : String {
+    return any.toString()
+}
+Logger.global.serialiser = { any: Any -&gt; customToJson(any) }
+
+// or:
+
+val lambdaJson = { any: Any -&gt; any.toString() }
+Logger.global.serialiser = { any: Any -&gt; lambdaJson(any) }
+
+// or:
+Logger.global.serialiser = { any: Any -&gt; any.toString() }
+</code></pre>
+
+<p><strong><em>Note</em></strong>: You should ensure that your custom function produces valid JSON.
+You may also want to have arrays and collections be automatically expanded,
+especially when making use of <strong>Twig</strong>'s auto-expanded throwables.</p>
+
+<p><strong><em>Note</em></strong>: Google's <strong>GSON</strong> seems to be unable to handle cyclic references, making it unsuitable for <strong>Twig</strong> for the time being.</p>
+
+<h3>
+<a id="per-logger-settings" class="anchor" href="#per-logger-settings" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Per-logger settings:</h3>
+
+<p>Log level, appender and serialiser can be set globally, as well as individually for each logger:</p>
+
+<pre><code>val loggerOne = Logger("one")
+val loggerTwo = Logger("two")
+
+loggerOne.level = Level.WARN
+loggerTwo.level = Level.INFO
+
+loggerOne.appender = FileAppender()
+loggerTwo.appender = ConsoleAppender()
+
+loggerOne.serialiser = Logger.simpleSerialiser
+loggerTwo.serialiser = { any: Any -&gt; any.toString() }
+
+</code></pre>
+
+<h3>
+<a id="exception-behaviour" class="anchor" href="#exception-behaviour" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Exception Behaviour</h3>
+
+<p>If an exception occurs during the actual logging process, e.g. because the underlying Appender fails, we try to log a diagnostic entry to STDERR</p>
+
+<pre><code>logger.fatal("exceptional")
+</code></pre>
+
+<pre><code>{"hostname":"vyo-pc","pid":3092,"thread":"Thread[main,5,]","time":"2015-11-30T19:47:15.128Z","level":60"name":"io.github.vyo.twig.logger.Logger@50ea2a","msg":"logging failed: null","original level":30,"original name":"io.github.vyo.twig.TestObject@970b10","original message":"exceptional","v":0
+</code></pre>
+
+<h2>
+<a id="notes" class="anchor" href="#notes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Notes</h2>
+
+<p>This project adheres to the <a href="http://semver.org/">semantic versioning</a> and <a href="http://keepachangelog.com/">change log</a> guidelines.</p>
+
+<h2>
+<a id="author" class="anchor" href="#author" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Author</h2>
+
+<p>Manuel Weidmann (<a href="https://github.com/vyo" class="user-mention">@vyo</a>)</p>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
+
+<p>ISC License</p>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
