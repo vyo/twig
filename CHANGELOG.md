@@ -3,9 +3,12 @@
 This project adheres to the [semantic versioning](http://semver.org/) and [change log](http://keepachangelog.com/) guidelines.
 
 ##  [Unreleased]
+
+##  [v1.1.0] - 2016-07-16
 ### Added
 - allow specifying serialisation function
 - add option to auto-expand throwables
+- properly handle arrays and collections
 
 ##  [v1.0.6] - 2016-07-12
 ### Changed
