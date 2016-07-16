@@ -33,8 +33,6 @@ open class Logger @JvmOverloads constructor(val caller: Any,
         val simpleSerialiser = { any: Any ->
 
             when (any) {
-            //TODO: handle complex arrays
-                is Array<*>,
                 is Boolean,
                 is Double,
                 is Float,
@@ -42,10 +40,46 @@ open class Logger @JvmOverloads constructor(val caller: Any,
                 is Int,
                 is Short,
                 is Byte,
-                is Char -> "${any.toString()}"
+                is Char -> simplePrimitiveSerialiser(any)
+                is Array<*> -> simpleArraySerialiser(any)
+                is Collection<*> -> simpleCollectionSerialiser(any)
                 else -> "\"${escapeSpecialChars(any.toString())}\""
             }
 
+        }
+
+        private fun simplePrimitiveSerialiser(any: Any): String {
+            return "${any.toString()}"
+        }
+
+        private fun simpleArraySerialiser(array: Array<*>): String {
+            var string = "["
+
+            for (element: Any? in array) {
+                if (element is Any) {
+                    string += simpleSerialiser(element)
+                    string += ","
+                }
+            }
+
+            string += "]"
+
+            return string.replace(",]", "]")
+        }
+
+        private fun simpleCollectionSerialiser(collection: Collection<*>): String {
+            var string = "["
+
+            for (element: Any? in collection) {
+                if (element is Any) {
+                    string += simpleSerialiser(element)
+                    string += ","
+                }
+            }
+
+            string += "]"
+
+            return string.replace(",]", "]")
         }
 
         var appender: Appender = ConsoleAppender()
@@ -132,54 +166,50 @@ open class Logger @JvmOverloads constructor(val caller: Any,
         }
     }
 
-    private fun stringify(any: Any): String {
-        return serialiser(any)
-    }
-
     fun log(level: Level, message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
         if (level < this.level) return task { }
         val thread: Thread = java.lang.Thread.currentThread()
         val time: String = isoFormat.format(Date(System.currentTimeMillis()))
         return task {
-            var entry: String = "{${stringify("hostname")}:${stringify(hostName)}," +
-                    "${stringify("pid")}:${stringify(pid)}," +
-                    "${stringify("thread")}:${stringify(thread)}," +
-                    "${stringify("time")}:${stringify(time)}," +
-                    "${stringify("level")}:${stringify(level.toInt())}," +
-                    "${stringify("name")}:${stringify(caller)}," +
-                    "${stringify("msg")}:${stringify(message)}"
+            var entry: String = "{${serialiser("hostname")}:${serialiser(hostName)}," +
+                    "${serialiser("pid")}:${serialiser(pid)}," +
+                    "${serialiser("thread")}:${serialiser(thread)}," +
+                    "${serialiser("time")}:${serialiser(time)}," +
+                    "${serialiser("level")}:${serialiser(level.toInt())}," +
+                    "${serialiser("name")}:${serialiser(caller)}," +
+                    "${serialiser("msg")}:${serialiser(message)}"
 
             for (customMessage in customMessages) {
-                entry += ",${stringify(customMessage.first)}:${stringify(customMessage.second)}"
+                entry += ",${serialiser(customMessage.first)}:${serialiser(customMessage.second)}"
             }
 
-            entry += ",${stringify("v")}:${stringify(0)}}"
+            entry += ",${serialiser("v")}:${serialiser(0)}}"
             appender.write(entry)
         } fail {
             //get the stacktrace
             var writer: StringWriter = StringWriter()
             it.printStackTrace(PrintWriter(writer))
-            var stacktrace = stringify(writer.toString())
+            var stacktrace = serialiser(writer.toString())
 
-            var entry: String = "{${stringify("hostname")}:${stringify(hostName)}," +
-                    "${stringify("pid")}:${stringify(pid)}," +
-                    "${stringify("thread")}:${stringify(thread)}," +
-                    "${stringify("time")}:${stringify(isoFormat.format(Date(System.currentTimeMillis())))}," +
-                    "${stringify("level")}:${stringify(Level.FATAL.toInt())}" +
-                    "${stringify("name")}:${stringify(this)}," +
-                    "${stringify("msg")}:${stringify("logging exception: ${it.javaClass}")}," +
-                    "${stringify("exception message")}:${stringify("${it.message}")}," +
-                    "${stringify("exception stacktrace")}:${stringify(stacktrace)}," +
-                    "${stringify("original time")}:${stringify(time)}," +
-                    "${stringify("original level")}:${stringify(level.toInt())}," +
-                    "${stringify("original name")}:${stringify(caller)}," +
-                    "${stringify("original msg")}:${stringify(message)}"
+            var entry: String = "{${serialiser("hostname")}:${serialiser(hostName)}," +
+                    "${serialiser("pid")}:${serialiser(pid)}," +
+                    "${serialiser("thread")}:${serialiser(thread)}," +
+                    "${serialiser("time")}:${serialiser(isoFormat.format(Date(System.currentTimeMillis())))}," +
+                    "${serialiser("level")}:${serialiser(Level.FATAL.toInt())}" +
+                    "${serialiser("name")}:${serialiser(this)}," +
+                    "${serialiser("msg")}:${serialiser("logging exception: ${it.javaClass}")}," +
+                    "${serialiser("exception message")}:${serialiser("${it.message}")}," +
+                    "${serialiser("exception stacktrace")}:${serialiser(stacktrace)}," +
+                    "${serialiser("original time")}:${serialiser(time)}," +
+                    "${serialiser("original level")}:${serialiser(level.toInt())}," +
+                    "${serialiser("original name")}:${serialiser(caller)}," +
+                    "${serialiser("original msg")}:${serialiser(message)}"
 
             for (customMessage in customMessages) {
-                entry += ",${stringify("original " + customMessage.first)}:${stringify(customMessage.second)}"
+                entry += ",${serialiser("original " + customMessage.first)}:${serialiser(customMessage.second)}"
             }
 
-            entry += ",${stringify("v")}:${stringify(0)}}"
+            entry += ",${serialiser("v")}:${serialiser(0)}}"
             System.err.println(entry)
         }
     }
