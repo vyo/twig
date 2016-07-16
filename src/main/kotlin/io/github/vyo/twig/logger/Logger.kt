@@ -29,8 +29,8 @@ open class Logger @JvmOverloads constructor(val caller: Any,
         private val TWIG_LEVEL = "TWIG_LEVEL"
         private val TWIG_WORKERS = "TWIG_WORKERS"
         private val TWIG_QUEUE = "TWIG_QUEUE"
-        private val TWIG_EXPAND_THROWABLES_LEVEL = "TWIG_EXPAND_THROWABLES_LEVEL"
-        private val TWIG_EXPAND_THROWABLES_DEPTH = "TWIG_EXPAND_THROWABLES_DEPTH"
+        private val TWIG_EXPANSION_LEVEL = "TWIG_EXPANSION_LEVEL"
+        private val TWIG_EXPANSION_DEPTH = "TWIG_EXPANSION_DEPTH"
 
         val simpleSerialiser = { any: Any ->
 
@@ -169,7 +169,7 @@ open class Logger @JvmOverloads constructor(val caller: Any,
                 }
             }
 
-            val expansionLevelEnv: String? = System.getenv(TWIG_EXPAND_THROWABLES_LEVEL)
+            val expansionLevelEnv: String? = System.getenv(TWIG_EXPANSION_LEVEL)
             try {
                 if (expansionLevelEnv is String) {
                     expansionLevel = Level.valueOf(expansionLevelEnv)
@@ -178,7 +178,7 @@ open class Logger @JvmOverloads constructor(val caller: Any,
                 level = Level.DEBUG
             }
 
-            val expansionDepthEnv: String? = System.getenv(TWIG_EXPAND_THROWABLES_DEPTH)
+            val expansionDepthEnv: String? = System.getenv(TWIG_EXPANSION_DEPTH)
             if (expansionDepthEnv is String && Integer.parseInt(expansionDepthEnv) is Int) {
                 expansionDepth = Integer.parseInt(expansionDepthEnv)
             } else {
@@ -199,11 +199,7 @@ open class Logger @JvmOverloads constructor(val caller: Any,
         val time: String = isoFormat.format(Date(System.currentTimeMillis()))
 
         if (expansionLevel >= this.level && message is Throwable) {
-            val stacktraceSize = if (message.stackTrace.size > expansionDepth) {
-                expansionDepth
-            } else {
-                message.stackTrace.size
-            }
+            val stacktraceSize = Math.min(message.stackTrace.size, expansionDepth)
 
             val stacktrace = Arrays.copyOf(message.stackTrace, stacktraceSize)
             val adjustedCustomMessages = Arrays.copyOf(customMessages, customMessages.size + 1)
