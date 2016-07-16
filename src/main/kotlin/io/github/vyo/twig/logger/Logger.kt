@@ -198,7 +198,7 @@ open class Logger @JvmOverloads constructor(val caller: Any,
         val thread: Thread = java.lang.Thread.currentThread()
         val time: String = isoFormat.format(Date(System.currentTimeMillis()))
 
-        if (expansionLevel >= this.level && message is Throwable) {
+        if (expansionLevel >= level && message is Throwable) {
             val stacktraceSize = Math.min(message.stackTrace.size, expansionDepth)
 
             val stacktrace = Arrays.copyOf(message.stackTrace, stacktraceSize)
