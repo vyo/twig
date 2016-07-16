@@ -105,7 +105,7 @@ open class Logger @JvmOverloads constructor(val caller: Any,
                 logger.info("global throwable expansion level $expansionLevel")
             }
 
-        var expansionDepth = 5
+        var expansionDepth = 50
             set(value) {
                 field = value
                 logger.info("global throwable expansion depth $expansionDepth")
@@ -182,7 +182,7 @@ open class Logger @JvmOverloads constructor(val caller: Any,
             if (expansionDepthEnv is String && Integer.parseInt(expansionDepthEnv) is Int) {
                 expansionDepth = Integer.parseInt(expansionDepthEnv)
             } else {
-                expansionDepth = 5
+                expansionDepth = 50
             }
 
             logger.info("logging worker count: $workers")
