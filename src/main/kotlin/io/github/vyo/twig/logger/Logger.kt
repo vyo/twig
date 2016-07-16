@@ -26,9 +26,11 @@ open class Logger @JvmOverloads constructor(val caller: Any,
 
     companion object global {
 
-        private val TWIG_LEVEL: String = "TWIG_LEVEL"
-        private val TWIG_WORKERS: String = "TWIG_WORKERS"
-        private val TWIG_QUEUE: String = "TWIG_QUEUE"
+        private val TWIG_LEVEL = "TWIG_LEVEL"
+        private val TWIG_WORKERS = "TWIG_WORKERS"
+        private val TWIG_QUEUE = "TWIG_QUEUE"
+        private val TWIG_EXPAND_THROWABLES_LEVEL = "TWIG_EXPAND_THROWABLES_LEVEL"
+        private val TWIG_EXPAND_THROWABLES_DEPTH = "TWIG_EXPAND_THROWABLES_DEPTH"
 
         val simpleSerialiser = { any: Any ->
 
@@ -96,9 +98,17 @@ open class Logger @JvmOverloads constructor(val caller: Any,
             }
 
         var serialiser: (any: Any) -> String = simpleSerialiser
+
+        var expansionLevel = Level.DEBUG
             set(value) {
                 field = value
-                logger.info("global serialiser $serialiser")
+                logger.info("global throwable expansion level $expansionLevel")
+            }
+
+        var expansionDepth = 5
+            set(value) {
+                field = value
+                logger.info("global throwable expansion depth $expansionDepth")
             }
 
         private val processInfo: String = ManagementFactory.getRuntimeMXBean().name
@@ -159,10 +169,27 @@ open class Logger @JvmOverloads constructor(val caller: Any,
                 }
             }
 
+            val expansionLevelEnv: String? = System.getenv(TWIG_EXPAND_THROWABLES_LEVEL)
+            try {
+                if (expansionLevelEnv is String) {
+                    expansionLevel = Level.valueOf(expansionLevelEnv)
+                }
+            } catch (exception: IllegalArgumentException) {
+                level = Level.DEBUG
+            }
+
+            val expansionDepthEnv: String? = System.getenv(TWIG_EXPAND_THROWABLES_DEPTH)
+            if (expansionDepthEnv is String && Integer.parseInt(expansionDepthEnv) is Int) {
+                expansionDepth = Integer.parseInt(expansionDepthEnv)
+            } else {
+                expansionDepth = 5
+            }
+
             logger.info("logging worker count: $workers")
             logger.info("logging work queue size: $queue")
             logger.info("global log level: $level")
-            logger.info("logging serialiser: $serialiser")
+            logger.info("throwable expansion level: $expansionLevel")
+            logger.info("throwable expansion depth: $expansionDepth")
         }
     }
 
@@ -170,6 +197,22 @@ open class Logger @JvmOverloads constructor(val caller: Any,
         if (level < this.level) return task { }
         val thread: Thread = java.lang.Thread.currentThread()
         val time: String = isoFormat.format(Date(System.currentTimeMillis()))
+
+        if (expansionLevel >= this.level && message is Throwable) {
+            val stacktraceSize = if (message.stackTrace.size > expansionDepth) {
+                expansionDepth
+            } else {
+                message.stackTrace.size
+            }
+
+            val stacktrace = Arrays.copyOf(message.stackTrace, stacktraceSize)
+            val adjustedCustomMessages = Arrays.copyOf(customMessages, customMessages.size + 1)
+
+            adjustedCustomMessages[customMessages.size] = Pair("stacktrace", stacktrace)
+
+            return log(level, message.toString(), *adjustedCustomMessages)
+        }
+
         return task {
             var entry: String = "{${serialiser("hostname")}:${serialiser(hostName)}," +
                     "${serialiser("pid")}:${serialiser(pid)}," +
