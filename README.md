@@ -198,4 +198,4 @@ Manuel Weidmann (@vyo)
 
 ##  License
 
-MIT License
+ISC License
