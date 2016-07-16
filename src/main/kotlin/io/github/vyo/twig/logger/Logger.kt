@@ -20,8 +20,9 @@ import java.util.*
  */
 
 open class Logger @JvmOverloads constructor(val caller: Any,
-                                            var appender: Appender = Logger.global.appender) {
-    var level: Level = global.level
+                                            var appender: Appender = Logger.global.appender,
+                                            var level: Level = Logger.global.level,
+                                            var serialiser: (any: Any) -> String = Logger.global.simpleSerialiser) {
 
     companion object global {
 
@@ -29,27 +30,7 @@ open class Logger @JvmOverloads constructor(val caller: Any,
         private val TWIG_WORKERS: String = "TWIG_WORKERS"
         private val TWIG_QUEUE: String = "TWIG_QUEUE"
 
-        var appender: Appender = ConsoleAppender()
-            set(value) {
-                field = value
-                logger.appender = value
-                logger.info("global appender $appender")
-            }
-
-        var level: Level = Level.INFO
-            set(value) {
-                field = value
-                logger.info("global log level $level")
-            }
-
-        private val processInfo: String = ManagementFactory.getRuntimeMXBean().name
-        private val pid: Int = Integer.parseInt(processInfo.split('@')[0])
-        private val hostName: String = processInfo.split('@')[1]
-        private val timeZone: TimeZone = TimeZone.getTimeZone("UTC");
-        private val isoFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-        private val logger: Logger = Logger("twig")
-
-        val defaultSerialisation = { any: Any ->
+        val simpleSerialiser = { any: Any ->
 
             when (any) {
             //TODO: handle complex arrays
@@ -67,11 +48,31 @@ open class Logger @JvmOverloads constructor(val caller: Any,
 
         }
 
-        var serialisation = defaultSerialisation
+        var appender: Appender = ConsoleAppender()
+            set(value) {
+                field = value
+                logger.appender = value
+                logger.info("global appender $appender")
+            }
 
-        private fun stringify(any: Any): String {
-            return serialisation(any)
-        }
+        var level: Level = Level.INFO
+            set(value) {
+                field = value
+                logger.info("global log level $level")
+            }
+
+        var serialiser: (any: Any) -> String = simpleSerialiser
+            set(value) {
+                field = value
+                logger.info("global serialiser $serialiser")
+            }
+
+        private val processInfo: String = ManagementFactory.getRuntimeMXBean().name
+        private val pid: Int = Integer.parseInt(processInfo.split('@')[0])
+        private val hostName: String = processInfo.split('@')[1]
+        private val timeZone: TimeZone = TimeZone.getTimeZone("UTC");
+        private val isoFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        private val logger: Logger = Logger("twig")
 
         private fun escapeSpecialChars(string: String): String {
 
@@ -126,8 +127,13 @@ open class Logger @JvmOverloads constructor(val caller: Any,
 
             logger.info("logging worker count: $workers")
             logger.info("logging work queue size: $queue")
-            if (level == Level.INFO) logger.info("global log level: $level")
+            logger.info("global log level: $level")
+            logger.info("logging serialiser: $serialiser")
         }
+    }
+
+    private fun stringify(any: Any): String {
+        return serialiser(any)
     }
 
     fun log(level: Level, message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
