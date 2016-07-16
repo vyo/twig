@@ -3,6 +3,9 @@
 This project adheres to the [semantic versioning](http://semver.org/) and [change log](http://keepachangelog.com/) guidelines.
 
 ##  [Unreleased]
+### Added
+- allow specifying serialisation function
+- add option to auto-expand throwables
 
 ##  [v1.0.6] - 2016-07-12
 ### Changed
