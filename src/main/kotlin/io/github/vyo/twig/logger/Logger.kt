@@ -114,7 +114,7 @@ open class Logger @JvmOverloads constructor(val caller: Any,
         private val processInfo: String = ManagementFactory.getRuntimeMXBean().name
         private val pid: Int = Integer.parseInt(processInfo.split('@')[0])
         private val hostName: String = processInfo.split('@')[1]
-        private val timeZone: TimeZone = TimeZone.getTimeZone("UTC");
+        private val timeZone: TimeZone = TimeZone.getTimeZone("UTC")
         private val isoFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
         private val logger: Logger = Logger("twig")
 
@@ -206,7 +206,7 @@ open class Logger @JvmOverloads constructor(val caller: Any,
 
             adjustedCustomMessages[customMessages.size] = Pair("stacktrace", stacktrace)
 
-            return log(level, message.toString(), *adjustedCustomMessages)
+            return log(level, "$message", *adjustedCustomMessages)
         }
 
         return task {
@@ -226,9 +226,9 @@ open class Logger @JvmOverloads constructor(val caller: Any,
             appender.write(entry)
         } fail {
             //get the stacktrace
-            var writer: StringWriter = StringWriter()
+            val writer: StringWriter = StringWriter()
             it.printStackTrace(PrintWriter(writer))
-            var stacktrace = serialiser(writer.toString())
+            val stacktrace = serialiser(writer.toString())
 
             var entry: String = "{${serialiser("hostname")}:${serialiser(hostName)}," +
                     "${serialiser("pid")}:${serialiser(pid)}," +
