@@ -3,6 +3,11 @@
 This project adheres to the [semantic versioning](http://semver.org/) and [change log](http://keepachangelog.com/) guidelines.
 
 ##  [Unreleased]
+### Added
+  - custom message fields may now be restricted by log level
+
+### Fixed
+  - stacktrace expansion checked against global log level instead of log level of the message
 
 ##  [v1.1.0] - 2016-07-16
 ### Added

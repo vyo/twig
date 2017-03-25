@@ -4,8 +4,8 @@ import io.github.vyo.twig.appender.Appender
 import io.github.vyo.twig.appender.ConsoleAppender
 import nl.komponents.kovenant.Kovenant
 import nl.komponents.kovenant.Promise
-import nl.komponents.kovenant.task
 import nl.komponents.kovenant.disruptor.queue.disruptorWorkQueue
+import nl.komponents.kovenant.task
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.lang.management.ManagementFactory
@@ -193,6 +193,15 @@ open class Logger @JvmOverloads constructor(val caller: Any,
         }
     }
 
+    private fun filterCustomMessagesByLevel(customMessages: Array<out Triple<String, Any, Level>>, level: Level):
+            Array<Pair<String, Any>> {
+        return customMessages.filter {
+            level >= it.third
+        }.map {
+            Pair(it.first, it.second)
+        }.toTypedArray()
+    }
+
     fun log(level: Level, message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
         if (level < this.level) return task { }
         val thread: Thread = java.lang.Thread.currentThread()
@@ -258,23 +267,47 @@ open class Logger @JvmOverloads constructor(val caller: Any,
         return log(Level.TRACE, message, *customMessages)
     }
 
+    fun trace(message: Any, customMessages: Array<Triple<String, Any, Level>>): Promise<Unit, Exception> {
+        return log(Level.TRACE, message, *filterCustomMessagesByLevel(customMessages, Level.TRACE))
+    }
+
     fun debug(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
         return log(Level.DEBUG, message, *customMessages)
+    }
+
+    fun debug(message: Any, customMessages: Array<Triple<String, Any, Level>>): Promise<Unit, Exception> {
+        return log(Level.DEBUG, message, *filterCustomMessagesByLevel(customMessages, Level.DEBUG))
     }
 
     fun info(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
         return log(Level.INFO, message, *customMessages)
     }
 
+    fun info(message: Any, customMessages: Array<Triple<String, Any, Level>>): Promise<Unit, Exception> {
+        return log(Level.INFO, message, *filterCustomMessagesByLevel(customMessages, Level.INFO))
+    }
+
     fun warn(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
         return log(Level.WARN, message, *customMessages)
+    }
+
+    fun warn(message: Any, customMessages: Array<Triple<String, Any, Level>>): Promise<Unit, Exception> {
+        return log(Level.WARN, message, *filterCustomMessagesByLevel(customMessages, Level.WARN))
     }
 
     fun error(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
         return log(Level.ERROR, message, *customMessages)
     }
 
+    fun error(message: Any, customMessages: Array<Triple<String, Any, Level>>): Promise<Unit, Exception> {
+        return log(Level.ERROR, message, *filterCustomMessagesByLevel(customMessages, Level.ERROR))
+    }
+
     fun fatal(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
         return log(Level.FATAL, message, *customMessages)
+    }
+
+    fun fatal(message: Any, customMessages: Array<Triple<String, Any, Level>>): Promise<Unit, Exception> {
+        return log(Level.FATAL, message, *filterCustomMessagesByLevel(customMessages, Level.FATAL))
     }
 }
