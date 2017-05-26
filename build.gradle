@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.0.0'
+    ext.kotlin_version = '1.1.1'
     ext.kovenant_version = '3.0.0'
     repositories {
         mavenCentral()
@@ -10,8 +10,8 @@ buildscript {
 }
 
 repositories {
-    mavenCentral()
     mavenLocal()
+    mavenCentral()
     maven {
         url 'http://oss.sonatype.org/content/repositories/snapshots'
     }
@@ -31,7 +31,7 @@ compileJava {
 }
 
 group = 'io.github.vyo'
-version = '1.1.0'
+version = '1.2.0-SNAPSHOT'
 description = 'Minimal bunyan-style logging for Kotlin and the JVM'
 
 ext.sonatypeUsr = project.hasProperty('sonatypeUsername') ? sonatypeUsername : ''
