@@ -35,15 +35,30 @@ and calling its ```dummyFunction``` will result in a log entry similar to
 
 ### Custom Fields
 
-You may pass in an arbitrary number of ```Pair<String, Any>``` to create additional custom log entry fields
+####	Regular Custom Fields
+
+You may pass in an arbitrary number of ```Pair<String, Any>``` to create additional custom log entry fields.
 
 ```kotlin
 logger.info("dummy", Pair("my custom field", "my custom content"), Pair("my logger", logger))
 ```
 
-```kotlin
+```json
 {"hostname":"vyo-pc","pid":6156,"thread":"Thread[main,5,]","time":"2015-11-30T19:09:58.507Z","level":30,"name":"io.github.vyo.twig.TestObject@16e898f","msg":"dummy","my custom field":"my custom content","my logger":"io.github.vyo.twig.logger.Logger@1a97992","v":0}
 ```
+
+####	Conditional Custom Fields
+
+Alternatively, you may use ```Triple<String, Any, Level>```; in this case each and every such custom field will only be present in the log if at the time of logging the respective logger's level is of equal or higher detail than the one specified for this custom field.
+
+```kotlin
+logger.info("dummy", Triple("my custom field", "my custom content", Level.INFO), Triple("my logger", logger, Level.DEBUG))
+```
+
+```json
+{"hostname":"vyo-pc","pid":6156,"thread":"Thread[main,5,]","time":"2015-11-30T19:09:58.507Z","level":30,"name":"io.github.vyo.twig.TestObject@16e898f","msg":"dummy","my custom field":"my custom content","v":0}
+```
+
 
 ### Auto-expanded Throwables
 
