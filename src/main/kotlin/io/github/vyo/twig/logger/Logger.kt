@@ -2,6 +2,7 @@ package io.github.vyo.twig.logger
 
 import io.github.vyo.twig.appender.Appender
 import io.github.vyo.twig.appender.ConsoleAppender
+import io.github.vyo.twig.serialiser.simpleSerialiser
 import nl.komponents.kovenant.Kovenant
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.disruptor.queue.disruptorWorkQueue
@@ -32,57 +33,6 @@ open class Logger @JvmOverloads constructor(val caller: Any,
         private val TWIG_EXPANSION_LEVEL = "TWIG_EXPANSION_LEVEL"
         private val TWIG_EXPANSION_DEPTH = "TWIG_EXPANSION_DEPTH"
 
-        val simpleSerialiser = { any: Any ->
-
-            when (any) {
-                is Boolean,
-                is Double,
-                is Float,
-                is Long,
-                is Int,
-                is Short,
-                is Byte,
-                is Char -> simplePrimitiveSerialiser(any)
-                is Array<*> -> simpleArraySerialiser(any)
-                is Collection<*> -> simpleCollectionSerialiser(any)
-                else -> "\"${escapeSpecialChars(any.toString())}\""
-            }
-
-        }
-
-        private fun simplePrimitiveSerialiser(any: Any): String {
-            return "${any.toString()}"
-        }
-
-        private fun simpleArraySerialiser(array: Array<*>): String {
-            var string = "["
-
-            for (element: Any? in array) {
-                if (element is Any) {
-                    string += simpleSerialiser(element)
-                    string += ","
-                }
-            }
-
-            string += "]"
-
-            return string.replace(",]", "]")
-        }
-
-        private fun simpleCollectionSerialiser(collection: Collection<*>): String {
-            var string = "["
-
-            for (element: Any? in collection) {
-                if (element is Any) {
-                    string += simpleSerialiser(element)
-                    string += ","
-                }
-            }
-
-            string += "]"
-
-            return string.replace(",]", "]")
-        }
 
         var appender: Appender = ConsoleAppender()
             set(value) {
@@ -117,19 +67,6 @@ open class Logger @JvmOverloads constructor(val caller: Any,
         private val timeZone: TimeZone = TimeZone.getTimeZone("UTC")
         private val isoFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
         private val logger: Logger = Logger("twig")
-
-        private fun escapeSpecialChars(string: String): String {
-
-            var escapedString: String = string
-            escapedString = escapedString.replace("\\", "\\\\")
-            escapedString = escapedString.replace("\n", "\\n")
-            escapedString = escapedString.replace("\r", "\\r")
-            escapedString = escapedString.replace("\b", "\\b")
-            escapedString = escapedString.replace("\t", "\\t")
-            escapedString = escapedString.replace("\"", "\\\"")
-
-            return escapedString
-        }
 
         init {
             isoFormat.timeZone = timeZone
