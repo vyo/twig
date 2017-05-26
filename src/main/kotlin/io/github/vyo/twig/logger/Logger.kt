@@ -22,7 +22,7 @@ import java.util.*
 open class Logger @JvmOverloads constructor(val caller: Any,
                                             var appender: Appender = Logger.global.appender,
                                             var level: Level = Logger.global.level,
-                                            var serialiser: (any: Any) -> String = Logger.global.simpleSerialiser) {
+                                            var serialiser: (any: Any) -> String = Logger.global.serialiser) {
 
     companion object global {
 
@@ -196,7 +196,7 @@ open class Logger @JvmOverloads constructor(val caller: Any,
     private fun filterCustomMessagesByLevel(customMessages: Array<out Triple<String, Any, Level>>, level: Level):
             Array<Pair<String, Any>> {
         return customMessages.filter {
-            level >= it.third
+            level.toInt() <= it.third.toInt()
         }.map {
             Pair(it.first, it.second)
         }.toTypedArray()
@@ -268,7 +268,7 @@ open class Logger @JvmOverloads constructor(val caller: Any,
     }
 
     fun trace(message: Any, customMessages: Array<Triple<String, Any, Level>>): Promise<Unit, Exception> {
-        return log(Level.TRACE, message, *filterCustomMessagesByLevel(customMessages, Level.TRACE))
+        return log(Level.TRACE, message, *filterCustomMessagesByLevel(customMessages, level))
     }
 
     fun debug(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
@@ -276,7 +276,7 @@ open class Logger @JvmOverloads constructor(val caller: Any,
     }
 
     fun debug(message: Any, customMessages: Array<Triple<String, Any, Level>>): Promise<Unit, Exception> {
-        return log(Level.DEBUG, message, *filterCustomMessagesByLevel(customMessages, Level.DEBUG))
+        return log(Level.DEBUG, message, *filterCustomMessagesByLevel(customMessages, level))
     }
 
     fun info(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
@@ -284,7 +284,7 @@ open class Logger @JvmOverloads constructor(val caller: Any,
     }
 
     fun info(message: Any, customMessages: Array<Triple<String, Any, Level>>): Promise<Unit, Exception> {
-        return log(Level.INFO, message, *filterCustomMessagesByLevel(customMessages, Level.INFO))
+        return log(Level.INFO, message, *filterCustomMessagesByLevel(customMessages, level))
     }
 
     fun warn(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
@@ -292,7 +292,7 @@ open class Logger @JvmOverloads constructor(val caller: Any,
     }
 
     fun warn(message: Any, customMessages: Array<Triple<String, Any, Level>>): Promise<Unit, Exception> {
-        return log(Level.WARN, message, *filterCustomMessagesByLevel(customMessages, Level.WARN))
+        return log(Level.WARN, message, *filterCustomMessagesByLevel(customMessages, level))
     }
 
     fun error(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
@@ -300,7 +300,7 @@ open class Logger @JvmOverloads constructor(val caller: Any,
     }
 
     fun error(message: Any, customMessages: Array<Triple<String, Any, Level>>): Promise<Unit, Exception> {
-        return log(Level.ERROR, message, *filterCustomMessagesByLevel(customMessages, Level.ERROR))
+        return log(Level.ERROR, message, *filterCustomMessagesByLevel(customMessages, level))
     }
 
     fun fatal(message: Any, vararg customMessages: Pair<String, Any>): Promise<Unit, Exception> {
@@ -308,6 +308,6 @@ open class Logger @JvmOverloads constructor(val caller: Any,
     }
 
     fun fatal(message: Any, customMessages: Array<Triple<String, Any, Level>>): Promise<Unit, Exception> {
-        return log(Level.FATAL, message, *filterCustomMessagesByLevel(customMessages, Level.FATAL))
+        return log(Level.FATAL, message, *filterCustomMessagesByLevel(customMessages, level))
     }
 }
